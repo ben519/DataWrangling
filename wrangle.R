@@ -1,0 +1,136 @@
+#--------------------------------------------------
+# Build dataset from scratch
+
+
+
+#--------------------------------------------------
+# Meta info
+
+# Full summary
+str(transactions)
+
+# How many rows?
+nrow(transactions)
+
+# How many columns?
+ncol(transactions)
+
+# What are the row names
+rownames(transactions)
+
+# What are the column names
+colnames(transactions)
+
+# Change the name of column "Quantity" to "Quant"
+setnames(transactions, "Quantity", "Quant")
+setnames(transactions, "Quant", "Quantity")  # change it back
+
+# Change the name of columns ProductID and UserID to PID and UID respectively
+setnames(transactions, c("ProductID", "UserID"), c("PID", "UID"))
+setnames(transactions, c("PID", "UID"), c("ProductID", "UserID"))  # change them back
+
+#--------------------------------------------------
+# Row subsetting
+
+# Display rows 1, 3, and 6
+transactions[c(1,3,6)]
+
+# Display rows exlcuding 1, 3, and 6
+transactions[!c(1,3,6)]
+
+# Display the first 3 rows
+transactions[1:3]
+head(transactions, 3)
+
+# Display rows excluding the first 3 rows
+transactions[-1:-3]
+tail(transactions, -3)
+
+# Display the last 2 rows
+indices <- seq(nrow(transactions) - 1, nrow(transactions), by=1)
+transactions[indices]
+tail(transactions, 2)
+
+# Display rows excluding the last 2 rows
+transactions[!indices]
+tail(transactions, -2)
+
+# Display rows where Quantity > 1
+transactions[Quantity > 1]
+
+# Display rows where UserID = 2
+transactions[UserID == 2]
+
+# Display rows where Quantity > 1 and UserID = 2
+transactions[Quantity > 1 & UserID == 2]
+
+# Display rows where Quantity + UserID is > 3
+transactions[Quantity + UserID > 3]
+
+# Display rows where an external vector, foo, is TRUE
+foo <- c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE)
+transactions[foo]
+
+# Display rows where an external vector, bar, is positive
+bar <- c(1, -3, 2, 2, 0, -4, -4, 0, 0, 2)
+transactions[sign(bar) == 1]
+
+# Display rows where foo is TRUE or bar is negative
+transactions[foo | sign(bar) == -1]
+
+# Display the rows where foo is not TRUE and bar is not negative
+transactions[!(foo | sign(bar) == -1)]
+transactions[!foo & sign(bar) > -1]
+
+#--------------------------------------------------
+# Column subsetting
+
+# Subset by columns TransactionID and TransactionDate
+transactions[, list(TransactionID, TransactionDate)]
+transactions[, .(TransactionID, TransactionDate)]  # short-hand version of line above
+
+# Subset rows where TransactionID > 100 and subset columns by TransactionID and TransactionDate
+transactions[TransactionID > 100, list(TransactionID, TransactionDate)]
+
+# Print columns defined by a vector of colum-names
+print_cols <- c("TransactionID", "UserID", "Quantity")
+transactions[, print_cols, with=FALSE]
+
+# Print columns defined by a vector of colum-names
+print_cols <- c("TransactionID", "UserID", "Quantity")
+transactions[, print_cols, with=FALSE]
+
+# Print columns excluding a vector of colum-names
+transactions[, !print_cols, with=FALSE]
+
+#--------------------------------------------------
+# Inserting & Updating Values
+
+# Set Quantity = 3 where TransactionID = 1
+transactions[TransactionID==1, Quantity := 3]
+
+# 
+
+# Insert a new column, Foo = UserID + ProductID
+
+
+
+#--------------------------------------------------
+# Ordering the rows
+
+
+#--------------------------------------------------
+# Determnine how many transactions each user made. Insert stat as field in transactions
+
+#--------------------------------------------------
+# For each (user, transaction), determine which transaction he/she made on the prior day
+
+
+#--------------------------------------------------
+# Read and write to CSV
+
+# Write transactions to CSV
+write.csv(transactions, "transactions.csv", row.names=FALSE, na="")  # fwrite(transactions, "transactions.csv")
+
+# Read transactions from CSV
+transactions <- fread("transactions.csv")  # use argument verbose=TRUE to see what's happening
