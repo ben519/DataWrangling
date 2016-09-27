@@ -1,9 +1,24 @@
-#--------------------------------------------------
+#======================================================================================================
 # Build dataset from scratch
 
+products <- data.table(
+  ProductID = 1:5,
+  Product = c("A", "B", "C", "D", "E"),
+  Price = c(53.01, 11.76, 57.45, 53.61, 21.72)
+)
 
+#======================================================================================================
+# Read and write to CSV
 
-#--------------------------------------------------
+# Read transactions from CSV
+users <- fread("transactions.csv", verbose=TRUE)
+products <- fread("products.csv")
+transactions <- fread("transactions.csv")
+
+# Write transactions to CSV
+fwrite(transactions, "transactions.csv")
+
+#======================================================================================================
 # Meta info
 
 # Full summary
@@ -29,7 +44,8 @@ setnames(transactions, "Quant", "Quantity")  # change it back
 setnames(transactions, c("ProductID", "UserID"), c("PID", "UID"))
 setnames(transactions, c("PID", "UID"), c("ProductID", "UserID"))  # change them back
 
-#--------------------------------------------------
+
+#======================================================================================================
 # Row subsetting
 
 # Display rows 1, 3, and 6
@@ -82,7 +98,8 @@ transactions[foo | sign(bar) == -1]
 transactions[!(foo | sign(bar) == -1)]
 transactions[!foo & sign(bar) > -1]
 
-#--------------------------------------------------
+
+#======================================================================================================
 # Column subsetting
 
 # Subset by columns TransactionID and TransactionDate
@@ -103,34 +120,49 @@ transactions[, print_cols, with=FALSE]
 # Print columns excluding a vector of colum-names
 transactions[, !print_cols, with=FALSE]
 
-#--------------------------------------------------
+
+#======================================================================================================
 # Inserting & Updating Values
 
-# Set Quantity = 3 where TransactionID = 1
-transactions[TransactionID==1, Quantity := 3]
-
-# 
-
 # Insert a new column, Foo = UserID + ProductID
+transactions[, Foo := UserID + ProductID]
+
+# Subset rows where TransactionID is even and set Foo = NA
+transactions[TransactionID %% 2 == 0, Foo := NA]
 
 
-
-#--------------------------------------------------
+#======================================================================================================
 # Ordering the rows
 
 
-#--------------------------------------------------
-# Determnine how many transactions each user made. Insert stat as field in transactions
+#======================================================================================================
+# Group By & Aggregation
 
-#--------------------------------------------------
+
+#======================================================================================================
+# Joins
+
+
+#======================================================================================================
+# Reshaping
+
+# Convert data from wide to tall
+
+# Convert data from tall to wide
+
+
+#======================================================================================================
+# Miscellaneous
+
+# Get rows which contain at least 1 NA value
+# Get rows which contain at least 1 NA value within a subset of columns
+
+# Get rows which contain all NA values
+# Get rows which contain all NA values within a subset of columns
+
+# Get the max value per row
+# Get the max value per row within a subset of columns
+
 # For each (user, transaction), determine which transaction he/she made on the prior day
 
-
-#--------------------------------------------------
-# Read and write to CSV
-
-# Write transactions to CSV
-write.csv(transactions, "transactions.csv", row.names=FALSE, na="")  # fwrite(transactions, "transactions.csv")
-
-# Read transactions from CSV
-transactions <- fread("transactions.csv")  # use argument verbose=TRUE to see what's happening
+# Determnine how many transactions each user made. Insert stat as field in transactions
