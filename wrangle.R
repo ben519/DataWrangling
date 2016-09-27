@@ -11,12 +11,12 @@ products <- data.table(
 # Read and write to CSV
 
 # Read transactions from CSV
-users <- fread("transactions.csv", verbose=TRUE)
-products <- fread("products.csv")
-transactions <- fread("transactions.csv")
+users <- fread("Data/transactions.csv", verbose=TRUE)
+products <- fread("Data/products.csv")
+transactions <- fread("Data/transactions.csv")
 
 # Write transactions to CSV
-fwrite(transactions, "transactions.csv")
+fwrite(transactions, "Data/transactions.csv")
 
 #======================================================================================================
 # Meta info
