@@ -83,11 +83,36 @@ getTransactions <- function(n=100, products, users, seed=0){
   return(transactions[])
 }
 
+getSessions <- function(n=100, users, seed=0){
+  # Build a data.table of users
+  
+  set.seed(seed)
+  sessions <- data.table(SessionID = seq(1, n))
+  sessions[, UserID := sample(users$UserID, size=.N, replace=TRUE)]
+  sessions[, SessionDate := as.Date("2010-1-1") + sample(2372, size=.N, replace=TRUE)]
+  
+  return(sessions[])
+}
+
 users <- getUsers(5, seed=10)
 products <- getProducts(5, seed=0)
 transactions <- getTransactions(10, products, users, seed=8)
+sessions <- getSessions(10, users, 0)
 users[!transactions, on="UserID"]
+
+
+# # Define a dataset of user sessions
+# sessions <- data.table(
+#   SessionID = 1:13,
+#   UserID = c(1L, 1L, 1L, 2L, 2L, 3L, 3L, 3L, 3L, 4L, 4L, 5L, 5L),
+#   SessionDate = c(as.Date(c("2010-03-27", "2014-04-24", "2016-12-12", 
+#                             "2013-09-09", "2014-05-27", 
+#                             "2010-09-28", "2010-9-29", "2014-05-11", "2013-09-09",
+#                             "2010-05-05", "2013-11-15", 
+#                             "2012-04-30", "2016-04-30")))
+# )
 
 write.csv(users, "Data/users.csv", row.names=FALSE)
 write.csv(products, "Data/products.csv", row.names=FALSE)
 write.csv(transactions, "Data/transactions.csv", row.names=FALSE)
+write.csv(sessions, "Data/sessions.csv", row.names=FALSE)

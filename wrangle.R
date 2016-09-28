@@ -111,8 +111,8 @@ transactions[, c(1, 3), with=FALSE]
 transactions[, list(TransactionID, TransactionDate)]
 transactions[, .(TransactionID, TransactionDate)]  # short-hand version of line above
 
-# Subset rows where TransactionID > 100 and subset columns by TransactionID and TransactionDate
-transactions[TransactionID > 100, list(TransactionID, TransactionDate)]
+# Subset rows where TransactionID > 5 and subset columns by TransactionID and TransactionDate
+transactions[TransactionID > 5, list(TransactionID, TransactionDate)]
 
 # Print columns defined by a vector of colum-names
 print_cols <- c("TransactionID", "UserID", "Quantity")
@@ -209,13 +209,22 @@ transactions[, `:=`(FirstTransactionDate=min(TransactionDate), LastTransactionDa
 #======================================================================================================
 # Joins
 
+#--------------------------------------------------
+# Basic Joins
+
 # Read datasets from CSV (to clear existing )
 users <- fread("Data/users.csv")
+sessions <- fread("Data/sessions.csv")
 products <- fread("Data/products.csv")
 transactions <- fread("Data/transactions.csv")
 
 # Set the first UserID to NA
 transactions[1, UserID := NA]
+
+# Convert date columns to date type
+users[, `:=`(Registered = as.Date(Registered), Cancelled = as.Date(Cancelled))]
+sessions[, SessionDate := as.Date(SessionDate)]
+transactions[, TransactionDate := as.Date(TransactionDate)]
 
 # Join users to transactions, keeping all rows from transactions and only matching rows from users (left join)
 users[transactions, on="UserID"]
@@ -246,8 +255,72 @@ t1[t2, on="UserID", allow.cartesian=TRUE]
 # Join each user to his/her first occuring transaction in the transactions table
 transactions[users, on="UserID", mult="first"]
 
+#--------------------------------------------------
+# Rolling Joins
+
+# Determine the ID of the last session which occured prior to (and including) the date of each transaction per user
+sessions[, RollDate := SessionDate]
+transactions[, RollDate := TransactionDate]
+setkey(sessions, "UserID", "RollDate")
+setkey(transactions, "UserID", "RollDate")
+sessions[transactions, roll=TRUE]
+
+# Determine the ID of the first session which occured after (and including) the date of each transaction per user
+sessions[, RollDate := SessionDate]
+transactions[, RollDate := TransactionDate]
+setkey(sessions, "UserID", "RollDate")
+setkey(transactions, "UserID", "RollDate")
+sessions[transactions, roll=-Inf]
+
+#--------------------------------------------------
+# Non-equi joins
+
+# Determine the first transaction that occured for each user prior to (and including) his/her Cancelled date
+setorder(transactions, "TransactionDate")
+transactions[users, on=list(UserID, TransactionDate <= Cancelled), mult="first"]
+
+# Get all transactions where TransactionDate is after the user's Cancellation Date
+users[transactions, on=list(UserID, Cancelled < TransactionDate), nomatch=0]
+
+#--------------------------------------------------
+# Join + Update
+
 # Insert the price of each product in the transactions dataset (join + update)
 transactions[products, ProductPrice := Price, on="ProductID"]
+
+#--------------------------------------------------
+# setkey and secondary indexing
+
+# Set the key of Transactions as UserID  ()
+setkey(transactions, "UserID")
+transactions  # notice rows are now sorted by UserID
+
+# View the key of transactions
+key(transactions)
+
+# Set the key of users as UserID and join to transactions, matching rows only (inner join)
+setkey(users, "UserID")
+transactions[users, nomatch=0]
+
+# Set ProductID as the key of transactions and products without re-ordering the rows, then join matching rows only
+setkey(transactions, "ProductID", physical=FALSE)
+setkey(products, "ProductID", physical=FALSE)
+transactions[products, nomatch=0]
+
+# Set each ID column as a secondary join index
+setindex(transactions, "TransactionID")
+setindex(transactions, "ProductID")
+setindex(transactions, "UserID")
+setindex(products, "ProductID")
+setindex(users, "UserID")
+
+# View indices
+indices(transactions)
+indices(products)
+indices(users)
+
+# Inner join between users, transactions, and products
+users[transactions, on="UserID"][products, on="ProductID"]  # Note that having the pre-computed secondary indices makes this faster
 
 
 #======================================================================================================
@@ -260,6 +333,8 @@ transactions[products, ProductPrice := Price, on="ProductID"]
 
 #======================================================================================================
 # Miscellaneous
+
+# Pick out the first row per group
 
 # Get rows which contain at least 1 NA value
 # Get rows which contain at least 1 NA value within a subset of columns
