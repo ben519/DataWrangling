@@ -3,22 +3,23 @@ library(data.table)
 #======================================================================================================
 # Build dataset from scratch
 
-products <- data.table(
-  ProductID = 1:5,
-  Product = c("A", "B", "C", "D", "E"),
-  Price = c(53.01, 11.76, 57.45, 53.61, 21.72)
+transactions <- data.table(
+  TransactionID = seq(1, 10),
+  TransactionDate = as.Date(c("2011-06-16", "2012-08-26", "2013-12-30", "2011-05-26", "2014-04-24", 
+                              "2016-05-08", "2010-08-21", "2013-12-23", "2013-06-06", "2015-04-24")),
+  ProductID = c(3L, 2L, 4L, 4L, 2L, 4L, 2L, 5L, 4L, 4L), 
+  UserID = c(3L, 1L, 3L, 3L, 1L, 5L, 1L, 2L, 2L, 3L), 
+  Quantity = c(0L, 3L, 0L, 0L, 3L, 4L, 0L, 6L, 0L, 3L)
 )
 
 #======================================================================================================
 # Read and write to CSV
 
-# Read datasets from CSV
-users <- fread("Data/transactions.csv", verbose=TRUE)
-products <- fread("Data/products.csv")
-transactions <- fread("Data/transactions.csv")
-
 # Write transactions to CSV
 write.csv(transactions, "Data/transactions.csv", row.names=FALSE)
+
+# Read transactions from CSV
+transactions <- fread("Data/transactions.csv")
 
 #======================================================================================================
 # Meta info
@@ -97,12 +98,14 @@ transactions[sign(bar) == 1]
 transactions[foo | sign(bar) == -1]
 
 # Display the rows where foo is not TRUE and bar is not negative
-transactions[!(foo | sign(bar) == -1)]
 transactions[!foo & sign(bar) > -1]
 
 
 #======================================================================================================
 # Column subsetting
+
+# Get columns 1 and 3
+transactions[, c(1, 3), with=FALSE]
 
 # Subset by columns TransactionID and TransactionDate
 transactions[, list(TransactionID, TransactionDate)]
@@ -115,13 +118,26 @@ transactions[TransactionID > 100, list(TransactionID, TransactionDate)]
 print_cols <- c("TransactionID", "UserID", "Quantity")
 transactions[, print_cols, with=FALSE]
 
-# Print columns defined by a vector of colum-names
+# Get columns defined by a vector of colum-names
 print_cols <- c("TransactionID", "UserID", "Quantity")
 transactions[, print_cols, with=FALSE]
 
-# Print columns excluding a vector of colum-names
+# Get columns excluding a vector of colum-names
 transactions[, !print_cols, with=FALSE]
 
+
+#======================================================================================================
+# Extract a vector
+
+# Get the 2nd column
+transactions[[2]]
+
+# Get the ProductID vector
+transactions$ProductID
+
+# Get the ProductID vector using a variable
+col <- "ProductID"
+transactions[[col]]
 
 #======================================================================================================
 # Inserting & Updating Values
@@ -180,6 +196,9 @@ transactions[, list(Transactions = .N), by=list(UserID, TransactionYear=year(Tra
 # Count the number of unique users which made a transaction per year (this is called chaining)
 transactions[, list(Transactions = .N), by=list(UserID, TransactionYear=year(TransactionDate))][, list(Users=.N), by=TransactionYear]
 
+# For each user in transactions, get the date of the transaction which had the most quantity
+transactions[, list(TargetDate=TransactionDate[which.min(Quantity)], MinQuantity=min(Quantity)), by=UserID]
+
 # Insert a column in transactions indicating the number of transactions per user
 transactions[, UserTransactions := .N, by=UserID]
 
@@ -191,11 +210,44 @@ transactions[, `:=`(FirstTransactionDate=min(TransactionDate), LastTransactionDa
 # Joins
 
 # Read datasets from CSV (to clear existing )
-users <- fread("Data/transactions.csv", verbose=TRUE)
+users <- fread("Data/users.csv")
 products <- fread("Data/products.csv")
 transactions <- fread("Data/transactions.csv")
 
+# Set the first UserID to NA
+transactions[1, UserID := NA]
 
+# Join users to transactions, keeping all rows from transactions and only matching rows from users (left join)
+users[transactions, on="UserID"]
+
+# Which transactions aren't tied to a user in users
+transactions[!users, on="UserID"]
+
+# Join users to transactions, keeping only rows from transactions and users that match via UserID (inner join)
+users[transactions, on="UserID", nomatch=0]
+
+# Join users to transactions, displaying all matching rows AND all non-matching rows (full outer join)
+merge(users, transactions, by="UserID", all=TRUE)
+
+# Determine which transactions each user made on the same day he/she registered
+transactions[users, on=c("UserID", "TransactionDate"="Registered")]
+
+# Build a dataset with every possible (UserID, ProductID) pair (cross join)
+CJ(UserID=users$UserID, ProductID=products$ProductID)
+
+# Determine how much quantity of each product was purchased by each user
+transactions[, list(Quantity=sum(Quantity)), by=list(UserID, ProductID)][CJ(UserID=users$UserID, ProductID=products$ProductID), on=c("UserID", "ProductID")]
+
+# For each user, get each possible pair of pair transactions (TransactionID1, TransactionID2)
+t1 <- transactions[, list(UserID, TransactionID1=TransactionID)]
+t2 <- transactions[, list(UserID, TransactionID2=TransactionID)]
+t1[t2, on="UserID", allow.cartesian=TRUE]
+
+# Join each user to his/her first occuring transaction in the transactions table
+transactions[users, on="UserID", mult="first"]
+
+# Insert the price of each product in the transactions dataset (join + update)
+transactions[products, ProductPrice := Price, on="ProductID"]
 
 
 #======================================================================================================
