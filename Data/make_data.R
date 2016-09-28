@@ -88,6 +88,6 @@ products <- getProducts(5, seed=0)
 transactions <- getTransactions(10, products, users, seed=8)
 users[!transactions, on="UserID"]
 
-fwrite(users, "Data/users.csv")
-fwrite(products, "Data/products.csv")
-fwrite(transactions, "Data/transactions.csv")
+write.csv(users, "Data/users.csv", row.names=FALSE)
+write.csv(products, "Data/products.csv", row.names=FALSE)
+write.csv(transactions, "Data/transactions.csv", row.names=FALSE)

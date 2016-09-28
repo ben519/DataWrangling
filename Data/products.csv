@@ -1,6 +1,6 @@
-ProductID,Product,Price
-1,A,5.301E1
-2,B,1.176E1
-3,C,5.745E1
-4,D,5.361E1
-5,E,2.172E1
+"ProductID","Product","Price"
+1,"A",53.01
+2,"B",11.76
+3,"C",57.45
+4,"D",53.61
+5,"E",21.72

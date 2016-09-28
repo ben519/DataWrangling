@@ -1,3 +1,5 @@
+library(data.table)
+
 #======================================================================================================
 # Build dataset from scratch
 
@@ -10,13 +12,13 @@ products <- data.table(
 #======================================================================================================
 # Read and write to CSV
 
-# Read transactions from CSV
+# Read datasets from CSV
 users <- fread("Data/transactions.csv", verbose=TRUE)
 products <- fread("Data/products.csv")
 transactions <- fread("Data/transactions.csv")
 
 # Write transactions to CSV
-fwrite(transactions, "Data/transactions.csv")
+write.csv(transactions, "Data/transactions.csv", row.names=FALSE)
 
 #======================================================================================================
 # Meta info
@@ -124,23 +126,76 @@ transactions[, !print_cols, with=FALSE]
 #======================================================================================================
 # Inserting & Updating Values
 
+# Convert the TransactionDate column to type Date
+transactions[, TransactionDate := as.Date(TransactionDate)]
+
 # Insert a new column, Foo = UserID + ProductID
 transactions[, Foo := UserID + ProductID]
 
 # Subset rows where TransactionID is even and set Foo = NA
 transactions[TransactionID %% 2 == 0, Foo := NA]
 
+# Add 100 to each TransactionID
+transactions[, TransactionID := 100 + TransactionID]
+transactions[, TransactionID := TransactionID - 100]  # revert to original IDs
+
+# Insert a column indicating each row number
+transactions[, RowIdx := .I]
+
+# Insert columns indicating the rank of each Quantity, minimum Quantity and maximum Quantity
+transactions[, `:=`(QuantityRk=frank(Quantity, ties.method = "average"), QuantityMin=min(Quantity), QuantityMax=max(Quantity))]
+
+# Remove column Foo
+transactions[, Foo := NULL]
+
+# Remove multiple columns RowIdx, QuantityRk, and RowIdx
+transactions[, c("RowIdx", "QuantityRk", "QuantityMin", "QuantityMax") := NULL]
 
 #======================================================================================================
 # Ordering the rows
 
+# Order by TransactionID descending
+transactions <- transactions[order(-TransactionID)]
+transactions <- transactions[order(TransactionID)]  # change it back
+
+# Order by UserID descending, TransactionDate descending
+setorderv(transactions, c("Quantity", "TransactionDate"), order=c(1, -1))
+setorder(transactions, TransactionID)  # change it back
 
 #======================================================================================================
 # Group By & Aggregation
 
+# Count the number of transactions per user
+transactions[, list(Transactions = .N), by=UserID]
+
+# Count the number of transactions & average Quantity per user
+transactions[, list(Transactions = .N, QuantityAvg = mean(Quantity)), by=UserID]
+
+# Count the transactions per year
+transactions[, list(Transactions = .N), by=year(TransactionDate)]
+
+# Count the transactions per (user, year) pair
+transactions[, list(Transactions = .N), by=list(UserID, TransactionYear=year(TransactionDate))]
+
+# Count the number of unique users which made a transaction per year (this is called chaining)
+transactions[, list(Transactions = .N), by=list(UserID, TransactionYear=year(TransactionDate))][, list(Users=.N), by=TransactionYear]
+
+# Insert a column in transactions indicating the number of transactions per user
+transactions[, UserTransactions := .N, by=UserID]
+
+# Insert columns in transactions indicating the first transaction date and last transaction date per user
+transactions[, `:=`(FirstTransactionDate=min(TransactionDate), LastTransactionDate=max(TransactionDate)), by=UserID]
+
 
 #======================================================================================================
 # Joins
+
+# Read datasets from CSV (to clear existing )
+users <- fread("Data/transactions.csv", verbose=TRUE)
+products <- fread("Data/products.csv")
+transactions <- fread("Data/transactions.csv")
+
+
 
 
 #======================================================================================================

@@ -1,6 +1,6 @@
-UserID,Gender,User,Registered,Cancelled
-1,female,Sumayo,16156,
-2,male,Randy,15957,16217
-3,male,Nicklaus,14880,16201
-4,female,Malia,16024,
-5,male,Hansen,15460,
+"UserID","Gender","User","Registered","Cancelled"
+1,"female","Sumayo",2014-03-27,NA
+2,"male","Randy",2013-09-09,2014-05-27
+3,"male","Nicklaus",2010-09-28,2014-05-11
+4,"female","Malia",2013-11-15,NA
+5,"male","Hansen",2012-04-30,NA
