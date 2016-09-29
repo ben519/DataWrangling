@@ -1,7 +1,7 @@
 #======================================================================================================
 # Install data.table package
 
-install.packages("data.table")
+# install.packages("data.table")
 
 #======================================================================================================
 # Load data.table package
@@ -13,18 +13,18 @@ library(data.table)
 
 transactions <- data.table(
   TransactionID = seq(1, 10),
-  TransactionDate = as.Date(c("2011-06-16", "2012-08-26", "2013-12-30", "2011-05-26", "2014-04-24", 
-                              "2016-05-08", "2010-08-21", "2013-12-23", "2013-06-06", "2015-04-24")),
-  ProductID = c(3L, 2L, 4L, 4L, 2L, 4L, 2L, 5L, 4L, 4L), 
-  UserID = c(3L, 1L, 3L, 3L, 1L, 5L, 1L, 2L, 2L, 3L), 
-  Quantity = c(0L, 3L, 0L, 0L, 3L, 4L, 0L, 6L, 0L, 3L)
+  TransactionDate = as.Date(c("2010-08-21", "2011-05-26", "2011-06-16", "2012-08-26", "2013-06-06", 
+                              "2013-12-23", "2013-12-30", "2014-04-24", "2015-04-24", "2016-05-08")),
+  UserID = c(7L, 3L, 3L, 1L, 2L, 2L, 3L, NA, 7L, 3L),
+  ProductID = c(2L, 4L, 3L, 2L, 4L, 5L, 4L, 2L, 4L, 4L),
+  Quantity = c(1L, 1L, 1L, 3L, 1L, 6L, 1L, 3L, 3L, 4L)
 )
 
 #======================================================================================================
-# Read datasets from CSV
+# Read data from CSV file
 
-# Load transactions from CSV
-transactions <- fread("Data/transactions.csv")
+# Load transactions
+transactions <- fread("https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/transactions.csv")
 
 #======================================================================================================
 # Meta info
@@ -129,7 +129,7 @@ transactions[, print_cols, with=FALSE]
 transactions[, !print_cols, with=FALSE]
 
 #======================================================================================================
-# Extract a vector
+# Extracting vectors from a data.table
 
 # Get the 2nd column
 transactions[[2]]
@@ -142,7 +142,7 @@ col <- "ProductID"
 transactions[[col]]
 
 #======================================================================================================
-# Inserting & Updating Values
+# Inserting and updating values
 
 # Convert the TransactionDate column to type Date
 transactions[, TransactionDate := as.Date(TransactionDate)]
@@ -170,36 +170,41 @@ transactions[, Foo := NULL]
 transactions[, c("RowIdx", "QuantityRk", "QuantityMin", "QuantityMax") := NULL]
 
 #======================================================================================================
-# Ordering the rows
+# Ordering the rows of a data.table
 
 # Order by TransactionID descending
-transactions <- transactions[order(-TransactionID)]
-transactions <- transactions[order(TransactionID)]  # change it back
+transactions[order(-TransactionID)]
 
 # Order by UserID descending, TransactionDate descending
 setorderv(transactions, c("Quantity", "TransactionDate"), order=c(1, -1))
 setorder(transactions, TransactionID)  # change it back
 
 #======================================================================================================
-# Group By & Aggregation
+# Grouping the rows of a data.table
 
-# Count the number of transactions per user
+#--------------------------------------------------
+# Group By + Aggregate
+
+# Group the transations per user, measuring the number of transactions per user
 transactions[, list(Transactions = .N), by=UserID]
 
-# Count the number of transactions & average Quantity per user
+# Group the transactions per user, measuring the transactions and average quantity per user
 transactions[, list(Transactions = .N, QuantityAvg = mean(Quantity)), by=UserID]
 
-# Count the transactions per year
+# Group the transactions per year of the transaction date, measuring the number of transactions per year
 transactions[, list(Transactions = .N), by=year(TransactionDate)]
 
-# Count the transactions per (user, year) pair
+# Group the transactions per (user, transaction-year) pair, measuring the number of transactions per group
 transactions[, list(Transactions = .N), by=list(UserID, TransactionYear=year(TransactionDate))]
 
-# Count the number of unique users which made a transaction per year (this is called chaining)
+# Group the transactions per user, measuring the max quantity each user made for a single transaction and the date of that transaction
+transactions[, list(MaxTransactionQuantityDate=TransactionDate[which.max(Quantity)], MaxQuantity=max(Quantity)), by=UserID]
+
+# Group the transactions per (user, transaction-year), and then group by transaction-year to get the number of users who made a transaction each year
 transactions[, list(Transactions = .N), by=list(UserID, TransactionYear=year(TransactionDate))][, list(Users=.N), by=TransactionYear]
 
-# For each user in transactions, get the date of the transaction which had the most quantity
-transactions[, list(TargetDate=TransactionDate[which.min(Quantity)], MinQuantity=min(Quantity)), by=UserID]
+#--------------------------------------------------
+# Group By + Update
 
 # Insert a column in transactions indicating the number of transactions per user
 transactions[, UserTransactions := .N, by=UserID]
@@ -212,16 +217,13 @@ setorder(transactions, "UserID", "TransactionDate")
 transactions[, PrevTransactionDate := c(as.Date(NA), head(TransactionDate, -1)), by=UserID]
 
 #======================================================================================================
-# Joins
+# Joining data.tables
 
-# Read datasets from CSV
-users <- fread("Data/users.csv")
-sessions <- fread("Data/sessions.csv")
-products <- fread("Data/products.csv")
-transactions <- fread("Data/transactions.csv")
-
-# Set the first UserID in transactions to NA
-transactions[1, UserID := NA]
+# Load datasets from CSV
+users <- fread("https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/users.csv")
+sessions <- fread("https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/sessions.csv")
+products <- fread("https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/products.csv")
+transactions <- transactions <- fread("https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/transactions.csv")
 
 # Convert date columns to Date type
 users[, `:=`(Registered = as.Date(Registered), Cancelled = as.Date(Cancelled))]
@@ -243,8 +245,8 @@ users[transactions, on="UserID", nomatch=0]
 # Join users to transactions, displaying all matching rows AND all non-matching rows (full outer join)
 merge(users, transactions, by="UserID", all=TRUE)
 
-# Determine which transactions each user made on the same day he/she registered
-transactions[users, on=c("UserID", "TransactionDate"="Registered")]
+# Determine which sessions occured on the same day each user registered
+users[sessions, on=c("UserID", "Registered" = "SessionDate"), nomatch=0]
 
 # Build a dataset with every possible (UserID, ProductID) pair (cross join)
 CJ(UserID=users$UserID, ProductID=products$ProductID)
@@ -297,7 +299,7 @@ transactions[products, ProductPrice := Price, on="ProductID"]
 users[transactions, on="UserID", Transactions := .N, by=UserID]
 
 #--------------------------------------------------
-# setkey and secondary indexing
+# Setting a key and secondary indexing
 
 # Set the key of Transactions as UserID  ()
 setkey(transactions, "UserID")
@@ -331,11 +333,11 @@ indices(users)
 users[transactions, on="UserID"][products, on="ProductID"]  # Note that having the pre-computed secondary indices makes this faster
 
 #======================================================================================================
-# Reshaping Data
+# Reshaping a data.table
 
 # Read datasets from CSV
-users <- fread("Data/users.csv")
-transactions <- fread("Data/transactions.csv")
+users <- fread("https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/users.csv")
+transactions <- transactions <- fread("https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/transactions.csv")
 
 # Convert date columns to Date type
 users[, `:=`(Registered = as.Date(Registered), Cancelled = as.Date(Cancelled))]
