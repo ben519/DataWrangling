@@ -21,7 +21,7 @@ transactions <- data.table(
 )
 
 #======================================================================================================
-# Read data from CSV file
+# Read data from a CSV file
 
 # Load transactions
 transactions <- fread("https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/transactions.csv")
@@ -347,13 +347,13 @@ transactions[, TransactionDate := as.Date(TransactionDate)]
 transactions[, TransactionWeekday := factor(weekdays(TransactionDate), levels=c("Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"))]
 
 #--------------------------------------------------
-# Convert data from wide format to tall format
+# Convert data from tall format to wide format
 
 # One-hot encode Weekday (i.e. convert data from tall to wide, where each possible weekday is a column)
 dcast(transactions, TransactionID ~ TransactionWeekday, value.var="TransactionWeekday", fun.aggregate=function(x) length(x))
 
 #--------------------------------------------------
-# Convert data from tall format to wide format
+# Convert data from wide format to tall format
 
 # Build a data.table with columns {UserID, ActionType, Date} where ActionType is either "Registered" or "Cancelled" and Date is the corresponding date value
 melt(users, id.vars="UserID", measure.vars=c("Registered", "Cancelled"), variable.name="ActionType", value.name="Date")
