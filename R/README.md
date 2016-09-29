@@ -5,21 +5,21 @@ Note that the examples here use [data.table](https://github.com/Rdatatable/data.
 
 ---
 
-### Install the data.table package ([pandas cross reference](#))
+### Install the data.table package ([pandas cross reference](https://github.com/ben519/DataWrangling/tree/master/Python#install-the-pandas-package-datatable-cross-reference))
 ```r
 install.packages("data.table")
 ```
 
 ---
 
-### Load the data.table package ([pandas cross reference](https://github.com/ben519/DataWrangling/tree/master/Python#import-the-pandas-package))
+### Load the data.table package ([pandas cross reference](https://github.com/ben519/DataWrangling/tree/master/Python#import-the-pandas-package-datatable-cross-reference))
 ```r
 library(data.table)
 ```
 
 ---
 
-### Build a data.table from scratch ([pandas cross reference](https://github.com/ben519/DataWrangling/tree/master/Python#build-a-dataset-from-scratch))
+### Build a data.table from scratch ([pandas cross reference](https://github.com/ben519/DataWrangling/tree/master/Python#build-a-dataframe-from-scratch-datatable-cross-reference))
 ```r
 transactions <- data.table(
 TransactionID = seq(1, 10),
