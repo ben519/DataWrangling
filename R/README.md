@@ -81,6 +81,26 @@ setnames(transactions, c("PID", "UID"), c("ProductID", "UserID"))  # change them
 
 ---
 
+### Extracting vectors from a data.table ([pandas cross reference](#))
+
+##### Get the 2nd column ([pandas cross reference](#))
+```r
+transactions[[2]]
+```
+
+##### Get the ProductID vector ([pandas cross reference](#))
+```r
+transactions$ProductID
+```
+
+##### Get the ProductID vector using a variable ([pandas cross reference](#))
+```r
+col <- "ProductID"
+transactions[[col]]
+```
+
+---
+
 ### Row subsetting ([pandas cross reference](#))
 
 ##### Subset rows 1, 3, and 6 ([pandas cross reference](#))
@@ -199,26 +219,6 @@ transactions[, !print_cols, with=FALSE]
 
 ---
 
-### Extracting vectors from a data.table ([pandas cross reference](#))
-
-##### Get the 2nd column ([pandas cross reference](#))
-```r
-transactions[[2]]
-```
-
-##### Get the ProductID vector ([pandas cross reference](#))
-```r
-transactions$ProductID
-```
-
-##### Get the ProductID vector using a variable ([pandas cross reference](#))
-```r
-col <- "ProductID"
-transactions[[col]]
-```
-
----
-
 ### Inserting and updating values ([pandas cross reference](#))
 
 ##### Convert the TransactionDate column to type Date ([pandas cross reference](#))
@@ -271,7 +271,7 @@ transactions[, c("RowIdx", "QuantityRk", "QuantityMin", "QuantityMax") := NULL]
 transactions[order(-TransactionID)]
 ```
 
-##### Order by UserID descending, TransactionDate descending ([pandas cross reference](#))
+##### Order by Quantity ascending, TransactionDate descending ([pandas cross reference](#))
 ```r
 setorderv(transactions, c("Quantity", "TransactionDate"), order=c(1, -1))
 setorder(transactions, TransactionID)  # change it back

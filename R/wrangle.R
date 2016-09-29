@@ -53,6 +53,19 @@ setnames(transactions, c("ProductID", "UserID"), c("PID", "UID"))
 setnames(transactions, c("PID", "UID"), c("ProductID", "UserID"))  # change them back
 
 #======================================================================================================
+# Extracting vectors from a data.table
+
+# Get the 2nd column
+transactions[[2]]
+
+# Get the ProductID vector
+transactions$ProductID
+
+# Get the ProductID vector using a variable
+col <- "ProductID"
+transactions[[col]]
+
+#======================================================================================================
 # Row subsetting
 
 # Subset rows 1, 3, and 6
@@ -129,19 +142,6 @@ transactions[, print_cols, with=FALSE]
 transactions[, !print_cols, with=FALSE]
 
 #======================================================================================================
-# Extracting vectors from a data.table
-
-# Get the 2nd column
-transactions[[2]]
-
-# Get the ProductID vector
-transactions$ProductID
-
-# Get the ProductID vector using a variable
-col <- "ProductID"
-transactions[[col]]
-
-#======================================================================================================
 # Inserting and updating values
 
 # Convert the TransactionDate column to type Date
@@ -175,7 +175,7 @@ transactions[, c("RowIdx", "QuantityRk", "QuantityMin", "QuantityMax") := NULL]
 # Order by TransactionID descending
 transactions[order(-TransactionID)]
 
-# Order by UserID descending, TransactionDate descending
+# Order by Quantity ascending, TransactionDate descending
 setorderv(transactions, c("Quantity", "TransactionDate"), order=c(1, -1))
 setorder(transactions, TransactionID)  # change it back
 

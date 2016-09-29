@@ -15,7 +15,7 @@ The Python and R directories each contain three similarly structured files:
 
 - [wrangle.py](https://github.com/ben519/DataWrangling/blob/master/Python/wrangle.py) / [wrangle.R](https://github.com/ben519/DataWrangling/blob/master/R/wrangle.R) - has objectives *and* answers (for learning)
 - [wrangle_blank.py](https://github.com/ben519/DataWrangling/blob/master/Python/wrangle_blank.py) / [wrangle_blank.R](https://github.com/ben519/DataWrangling/blob/master/R/wrangle_blank.R)  - has objectives *only* (for testing your skills)
-- [README.md (R)](https://github.com/ben519/DataWrangling/blob/master/R/README.md) / [README.md (Python)](https://github.com/ben519/DataWrangling/blob/master/Python/README.md) - has objectives, answers, and pandas-data.table cross reference
+- [README.md (R)](https://github.com/ben519/DataWrangling/blob/master/R/README.md) / [README.md (Python)](https://github.com/ben519/DataWrangling/blob/master/Python/README.md) - has objectives, answers, and pandas-data.table cross references
 
 The wrangle files make use of four datasets in the [Data](https://github.com/ben519/DataWrangling/tree/master/Data) directory: 
 
