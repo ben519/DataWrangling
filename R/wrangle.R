@@ -1,7 +1,15 @@
+#======================================================================================================
+# Install data.table package
+
+install.packages("data.table")
+
+#======================================================================================================
+# Load data.table package
+
 library(data.table)
 
 #======================================================================================================
-# Build dataset from scratch
+# Build data.table from scratch
 
 transactions <- data.table(
   TransactionID = seq(1, 10),
@@ -13,12 +21,9 @@ transactions <- data.table(
 )
 
 #======================================================================================================
-# Read and write to CSV
+# Read datasets from CSV
 
-# Write transactions to CSV
-write.csv(transactions, "Data/transactions.csv", row.names=FALSE)
-
-# Read transactions from CSV
+# Load transactions from CSV
 transactions <- fread("Data/transactions.csv")
 
 #======================================================================================================
@@ -33,10 +38,10 @@ nrow(transactions)
 # How many columns?
 ncol(transactions)
 
-# What are the row names
+# Get the row names
 rownames(transactions)
 
-# What are the column names
+# Get the column names
 colnames(transactions)
 
 # Change the name of column "Quantity" to "Quant"
@@ -47,64 +52,62 @@ setnames(transactions, "Quant", "Quantity")  # change it back
 setnames(transactions, c("ProductID", "UserID"), c("PID", "UID"))
 setnames(transactions, c("PID", "UID"), c("ProductID", "UserID"))  # change them back
 
-
 #======================================================================================================
 # Row subsetting
 
-# Display rows 1, 3, and 6
+# Subset rows 1, 3, and 6
 transactions[c(1,3,6)]
 
-# Display rows exlcuding 1, 3, and 6
+# Subset rows exlcuding 1, 3, and 6
 transactions[!c(1,3,6)]
 
-# Display the first 3 rows
+# Subset the first 3 rows
 transactions[1:3]
 head(transactions, 3)
 
-# Display rows excluding the first 3 rows
+# Subset rows excluding the first 3 rows
 transactions[-1:-3]
 tail(transactions, -3)
 
-# Display the last 2 rows
+# Subset the last 2 rows
 indices <- seq(nrow(transactions) - 1, nrow(transactions), by=1)
 transactions[indices]
 tail(transactions, 2)
 
-# Display rows excluding the last 2 rows
+# Subset rows excluding the last 2 rows
 transactions[!indices]
 tail(transactions, -2)
 
-# Display rows where Quantity > 1
+# Subset rows where Quantity > 1
 transactions[Quantity > 1]
 
-# Display rows where UserID = 2
+# Subset rows where UserID = 2
 transactions[UserID == 2]
 
-# Display rows where Quantity > 1 and UserID = 2
+# Subset rows where Quantity > 1 and UserID = 2
 transactions[Quantity > 1 & UserID == 2]
 
-# Display rows where Quantity + UserID is > 3
+# Subset rows where Quantity + UserID is > 3
 transactions[Quantity + UserID > 3]
 
-# Display rows where an external vector, foo, is TRUE
+# Subset rows where an external vector, foo, is TRUE
 foo <- c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE)
 transactions[foo]
 
-# Display rows where an external vector, bar, is positive
+# Subset rows where an external vector, bar, is positive
 bar <- c(1, -3, 2, 2, 0, -4, -4, 0, 0, 2)
 transactions[sign(bar) == 1]
 
-# Display rows where foo is TRUE or bar is negative
+# Subset rows where foo is TRUE or bar is negative
 transactions[foo | sign(bar) == -1]
 
-# Display the rows where foo is not TRUE and bar is not negative
+# Subset the rows where foo is not TRUE and bar is not negative
 transactions[!foo & sign(bar) > -1]
-
 
 #======================================================================================================
 # Column subsetting
 
-# Get columns 1 and 3
+# Subset by columns 1 and 3
 transactions[, c(1, 3), with=FALSE]
 
 # Subset by columns TransactionID and TransactionDate
@@ -114,17 +117,16 @@ transactions[, .(TransactionID, TransactionDate)]  # short-hand version of line 
 # Subset rows where TransactionID > 5 and subset columns by TransactionID and TransactionDate
 transactions[TransactionID > 5, list(TransactionID, TransactionDate)]
 
-# Print columns defined by a vector of colum-names
+# Subset columns defined by a vector of columm names
 print_cols <- c("TransactionID", "UserID", "Quantity")
 transactions[, print_cols, with=FALSE]
 
-# Get columns defined by a vector of colum-names
+# Subset columns defined by a vector of column names
 print_cols <- c("TransactionID", "UserID", "Quantity")
 transactions[, print_cols, with=FALSE]
 
-# Get columns excluding a vector of colum-names
+# Subset columns excluding a vector of column names
 transactions[, !print_cols, with=FALSE]
-
 
 #======================================================================================================
 # Extract a vector
@@ -205,26 +207,29 @@ transactions[, UserTransactions := .N, by=UserID]
 # Insert columns in transactions indicating the first transaction date and last transaction date per user
 transactions[, `:=`(FirstTransactionDate=min(TransactionDate), LastTransactionDate=max(TransactionDate)), by=UserID]
 
+# For each transaction, get the date of the previous transaction made by the same user
+setorder(transactions, "UserID", "TransactionDate")
+transactions[, PrevTransactionDate := c(as.Date(NA), head(TransactionDate, -1)), by=UserID]
 
 #======================================================================================================
 # Joins
 
-#--------------------------------------------------
-# Basic Joins
-
-# Read datasets from CSV (to clear existing )
+# Read datasets from CSV
 users <- fread("Data/users.csv")
 sessions <- fread("Data/sessions.csv")
 products <- fread("Data/products.csv")
 transactions <- fread("Data/transactions.csv")
 
-# Set the first UserID to NA
+# Set the first UserID in transactions to NA
 transactions[1, UserID := NA]
 
-# Convert date columns to date type
+# Convert date columns to Date type
 users[, `:=`(Registered = as.Date(Registered), Cancelled = as.Date(Cancelled))]
 sessions[, SessionDate := as.Date(SessionDate)]
 transactions[, TransactionDate := as.Date(TransactionDate)]
+
+#--------------------------------------------------
+# Basic Joins
 
 # Join users to transactions, keeping all rows from transactions and only matching rows from users (left join)
 users[transactions, on="UserID"]
@@ -288,6 +293,9 @@ users[transactions, on=list(UserID, Cancelled < TransactionDate), nomatch=0]
 # Insert the price of each product in the transactions dataset (join + update)
 transactions[products, ProductPrice := Price, on="ProductID"]
 
+# Insert the number of transactions each user made into the users dataset
+users[transactions, on="UserID", Transactions := .N, by=UserID]
+
 #--------------------------------------------------
 # setkey and secondary indexing
 
@@ -322,19 +330,34 @@ indices(users)
 # Inner join between users, transactions, and products
 users[transactions, on="UserID"][products, on="ProductID"]  # Note that having the pre-computed secondary indices makes this faster
 
+#======================================================================================================
+# Reshaping Data
+
+# Read datasets from CSV
+users <- fread("Data/users.csv")
+transactions <- fread("Data/transactions.csv")
+
+# Convert date columns to Date type
+users[, `:=`(Registered = as.Date(Registered), Cancelled = as.Date(Cancelled))]
+transactions[, TransactionDate := as.Date(TransactionDate)]
+
+# Add column TransactionWeekday as a factor with levels Saturday through Friday
+transactions[, TransactionWeekday := factor(weekdays(TransactionDate), levels=c("Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"))]
+
+#--------------------------------------------------
+# Convert data from wide format to tall format
+
+# One-hot encode Weekday (i.e. convert data from tall to wide, where each possible weekday is a column)
+dcast(transactions, TransactionID ~ TransactionWeekday, value.var="TransactionWeekday", fun.aggregate=function(x) length(x))
+
+#--------------------------------------------------
+# Convert data from tall format to wide format
+
+# Build a data.table with columns {UserID, ActionType, Date} where ActionType is either "Registered" or "Cancelled" and Date is the corresponding date value
+melt(users, id.vars="UserID", measure.vars=c("Registered", "Cancelled"), variable.name="ActionType", value.name="Date")
 
 #======================================================================================================
-# Reshaping
-
-# Convert data from wide to tall
-
-# Convert data from tall to wide
-
-
-#======================================================================================================
-# Miscellaneous
-
-# Pick out the first row per group
+# To Do
 
 # Get rows which contain at least 1 NA value
 # Get rows which contain at least 1 NA value within a subset of columns
@@ -344,7 +367,3 @@ users[transactions, on="UserID"][products, on="ProductID"]  # Note that having t
 
 # Get the max value per row
 # Get the max value per row within a subset of columns
-
-# For each (user, transaction), determine which transaction he/she made on the prior day
-
-# Determnine how many transactions each user made. Insert stat as field in transactions
