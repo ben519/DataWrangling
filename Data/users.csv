@@ -1,6 +1,6 @@
-"UserID","Gender","User","Registered","Cancelled"
-1,"female","Sumayo",2014-03-27,NA
-2,"male","Randy",2013-09-09,2014-05-27
-3,"male","Nicklaus",2010-09-28,2014-05-11
-4,"female","Malia",2013-11-15,NA
-5,"male","Hansen",2012-04-30,NA
+"UserID","User","Gender","Registered","Cancelled"
+1,"Charles","male",2012-12-21,NA
+2,"Pedro","male",2010-08-01,2010-08-08
+3,"Caroline","female",2012-10-23,2016-06-07
+4,"Brielle","female",2013-07-17,NA
+5,"Benjamin","male",2010-11-25,NA

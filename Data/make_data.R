@@ -1,34 +1,12 @@
 library(data.table)
 library(babynames)
 
+# Get possible boy and girl names
 possible_names <- data.table(babynames)[year==2014, list(name, sex, n)][order(-n)]
 boy_names <- possible_names[sex=="M"]
 girl_names <- possible_names[sex=="F"]
 
-users <- data.table(
-  UserID=c(1L, 2L, 3L, 4L, 5L),
-  User=c("Bob", "Sue", "Jane", "John", "Clark"), 
-  Gender=c("male", "female", "female", "male", "male"),
-  Registered=as.Date(c("2014-3-1", "2013-12-20", "2013-12-11", "2015-4-17", "2016-5-1")),
-  Cancelled=as.Date(c("2014-3-15", NA, NA, NA, "2016-5-1"))
-)
-
-products <- data.table(
-  ProductID=c(1L, 2L, 3L, 4L),
-  Product=c("football", "baseball", "football helmet", "frisby"),
-  Price=c(30, 5, 45, 12),
-  Description=c("NCAA regulation football", "MLB replica baseball", "NCAA regulation football helmet", "Ultimate Frisby (yellow)")
-)
-
-transactions <- data.table(
-  TransactionID=c(104L, 66L, 37L, 181L, 99L, 72L),
-  TransactionDate=as.Date(c("2014-5-3", "2016-7-11", "2013-8-9", "2013-11-15", "2015-12-6", "2016-2-2")),
-  UserID=c(5L, 3L, 2L, 2L, 1L, 1L),
-  ProductID=c(4L, 2L, 5L, 5L, 3L, 1L),
-  Quantity=c(2L, 2L, 3L, 1L, 1L, 5L)
-)
-
-getUsers <- function(n=10, seed=0){
+getUsers <- function(n=10, minDate=as.Date("2010-1-1"), maxDate=as.Date("2016-6-30"), seed=0){
   # Build a data.table of users
   
   set.seed(seed)
@@ -36,9 +14,12 @@ getUsers <- function(n=10, seed=0){
   users[, Gender := sample(c("male", "female"), size=.N, replace=TRUE)]
   users[Gender=="male", User := sample(boy_names$name, size=.N, replace=TRUE, prob=boy_names$n)]
   users[Gender=="female", User := sample(girl_names$name, size=.N, replace=TRUE, prob=girl_names$n)]
-  users[, Registered := as.Date("2010-1-1") + sample(2372, size=.N, replace=TRUE)]
+  users[, Registered := minDate + sample(as.integer(maxDate-minDate), size=.N, replace=TRUE)]
   users[, Cancelled := Registered + sample(5000, size=.N, replace=TRUE)]
-  users[Cancelled > as.Date("2016-6-30"), Cancelled := NA]
+  users[Cancelled > maxDate, Cancelled := NA]
+  
+  # Fix the column order
+  setcolorder(users, c("UserID", "User", "Gender", "Registered", "Cancelled"))
   
   return(users[])
 }
@@ -70,49 +51,104 @@ getProducts <- function(n=10, seed=0){
   return(products[])
 }
 
-getTransactions <- function(n=100, products, users, seed=0){
+getTransactions <- function(n=100, products, users, minDate=as.Date("2010-1-1"), maxDate=as.Date("2016-6-30"), 
+                            orphanUsers=0, naUsers=0, seed=0){
   # Build a data.table of users
+  # orphanUsers and naUsers should be in the range [0, 1] s.t. orphanUsers + naUsers <= 1
+  # If orphanUsers > 0, transactions will set the specified portion UserIDs to some IDs not in the users dataset
+  # If naUsers > 0, transactions will set the specified portion UserIDs to NA
   
   set.seed(seed)
   transactions <- data.table(TransactionID = seq(1, n))
   transactions[, ProductID := sample(products$ProductID, size=.N, replace=TRUE)]
   transactions[, UserID := sample(users$UserID, size=.N, replace=TRUE)]
-  transactions[, TransactionDate := as.Date("2010-1-1") + sample(2372, size=.N, replace=TRUE)]
-  transactions[, Quantity := rnbinom(n=.N, size=5, prob=.8)]
+  transactions[, TransactionDate := minDate + sample(as.integer(maxDate-minDate), size=.N, replace=TRUE)]
+  transactions[, Quantity := pmax(1L, rnbinom(n=.N, size=5, prob=.8))]
+  
+  # Helper function (see ?sample)
+  resample <- function(x, ...) x[sample.int(length(x), ...)] 
+  
+  # Insert orphan users
+  orphanUsersMap <- transactions[sample(.N, round(orphanUsers * .N)), list(TransactionID)]
+  potentialNewUsers <- nrow(users) + sample(nrow(users), ceiling(orphanUsers * nrow(users)))
+  orphanUsersMap[, NewUserID := resample(potentialNewUsers, .N, replace=TRUE)]
+  transactions[orphanUsersMap, UserID := NewUserID, on="TransactionID"]
+  
+  # Insert naUsers
+  naUsersMap <- transactions[!orphanUsersMap, on="TransactionID"][sample(.N, round(naUsers * nrow(transactions))), list(TransactionID)]
+  transactions[naUsersMap, UserID := NA_integer_, on="TransactionID"]
+  
+  # Reset the TransactionIDs to match the transaction dates
+  setorder(transactions, "TransactionDate")
+  transactions[, TransactionID := .I]
+  
+  # Fix the column order
+  setcolorder(transactions, c("TransactionID", "TransactionDate", "UserID", "ProductID", "Quantity"))
   
   return(transactions[])
 }
 
-getSessions <- function(n=100, users, seed=0){
+getSessions <- function(n=100, users, minDate=as.Date("2010-1-1"), maxDate=as.Date("2016-6-30"), seed=0){
   # Build a data.table of users
   
   set.seed(seed)
   sessions <- data.table(SessionID = seq(1, n))
   sessions[, UserID := sample(users$UserID, size=.N, replace=TRUE)]
-  sessions[, SessionDate := as.Date("2010-1-1") + sample(2372, size=.N, replace=TRUE)]
+  sessions[, SessionDate := minDate + sample(as.integer(maxDate-minDate), size=.N, replace=TRUE)]
+  
+  # Reset the SessionID to match the session dates
+  setorder(sessions, "SessionDate")
+  sessions[, SessionID := .I]
+  
+  # Fix the column order
+  setcolorder(sessions, c("SessionID", "SessionDate", "UserID"))
   
   return(sessions[])
 }
 
-users <- getUsers(5, seed=10)
+users <- getUsers(5, seed=14)
 products <- getProducts(5, seed=0)
-transactions <- getTransactions(10, products, users, seed=8)
-sessions <- getSessions(10, users, 0)
-users[!transactions, on="UserID"]
+transactions <- getTransactions(10, products, users, orphanUsers=.1, naUsers=.1, seed=0)
+sessions <- getSessions(10, users, seed=0)
 
+#--------------------------------------------------
+# Check for good instructional data
 
-# # Define a dataset of user sessions
-# sessions <- data.table(
-#   SessionID = 1:13,
-#   UserID = c(1L, 1L, 1L, 2L, 2L, 3L, 3L, 3L, 3L, 4L, 4L, 5L, 5L),
-#   SessionDate = c(as.Date(c("2010-03-27", "2014-04-24", "2016-12-12", 
-#                             "2013-09-09", "2014-05-27", 
-#                             "2010-09-28", "2010-9-29", "2014-05-11", "2013-09-09",
-#                             "2010-05-05", "2013-11-15", 
-#                             "2012-04-30", "2016-04-30")))
-# )
+getGoodData <- function(){
+  
+  for(i in 1:100){
+    print(i)
+    
+    users <- getUsers(5, seed=i)
+    products <- getProducts(5, seed=i)
+    transactions <- getTransactions(10, products, users, orphanUsers=.1, naUsers=.1, seed=i)
+    sessions <- getSessions(10, users, seed=i)
+    
+    # Are some users not in transactions?
+    test1 <- nrow(users[!transactions, on="UserID"]) > 0
+    
+    # Is there an instance of a user who has a session on the same day he registered?
+    test2 <- nrow(users[sessions, on=c("UserID", "Registered" = "SessionDate"), nomatch=0]) > 1
+    
+    if(test1 == TRUE & test2 == TRUE){
+      users <<- users
+      products <<- products
+      transactions <<- transactions
+      sessions <<- sessions
+      print(paste("Good key:", i))
+      
+      break
+    }
+  }
+}
+
+getGoodData()
+
+#--------------------------------------------------
+# Save results to CSV
 
 write.csv(users, "Data/users.csv", row.names=FALSE)
 write.csv(products, "Data/products.csv", row.names=FALSE)
 write.csv(transactions, "Data/transactions.csv", row.names=FALSE)
 write.csv(sessions, "Data/sessions.csv", row.names=FALSE)
+
