@@ -13,11 +13,11 @@ This repo consists of three primary directories:
 
 The Python and R directories each contain three similarly structured files: 
 
-- [wrangle.py](https://github.com/ben519/DataWrangling/blob/master/Python/wrangle.py) / [wrangle.R](https://github.com/ben519/DataWrangling/blob/master/R/wrangle.R) - has objectives *and* answers
-- [wrangle_blank.py](https://github.com/ben519/DataWrangling/blob/master/Python/wrangle_blank.py) / [wrangle_blank.R](https://github.com/ben519/DataWrangling/blob/master/R/wrangle_blank.R)  - has objectives *only*
+- [wrangle.py](https://github.com/ben519/DataWrangling/blob/master/Python/wrangle.py) / [wrangle.R](https://github.com/ben519/DataWrangling/blob/master/R/wrangle.R) - has objectives *and* answers (for learning)
+- [wrangle_blank.py](https://github.com/ben519/DataWrangling/blob/master/Python/wrangle_blank.py) / [wrangle_blank.R](https://github.com/ben519/DataWrangling/blob/master/R/wrangle_blank.R)  - has objectives *only* (for testing your skills)
 - [README.md (R)](https://github.com/ben519/DataWrangling/blob/master/R/README.md) / [README.md (Python)](https://github.com/ben519/DataWrangling/blob/master/Python/README.md) - has objectives, answers, and pandas-data.table cross reference
 
-The wrangle files make use of four datasets in the Data directory: 
+The wrangle files make use of four datasets in the [Data](https://github.com/ben519/DataWrangling/tree/master/Data) directory: 
 
 - [products.csv](https://github.com/ben519/DataWrangling/blob/master/Data/products.csv)
 
@@ -71,8 +71,8 @@ The wrangle files make use of four datasets in the Data directory:
 
 These datasets are small for illustrative purposes. If you'd like to test speed comparisons between pandas and data.table, you can use the [make_data.R](https://github.com/ben519/DataWrangling/blob/master/Data/make_data.R) file to generate large versions of these datasets.
 
-## Call for contribution
-I'd like to encourage contribution for this project - it's well suited for it. Also note that I'm much more comfortable using data.table than pandas, so it's likely I've done some suboptimal wrangling in pandas.
+## Call for contributions
+I'd like to encourage contributions for this project - it's well suited for it. Also note that I'm much more comfortable using data.table than pandas, so it's likely I've done some suboptimal wrangling in pandas.
 
 ## Contact
 If you'd like to contact me regarding bugs, questions, or general consulting, feel free to drop me a line - bgorman519@gmail.com
