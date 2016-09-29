@@ -72,6 +72,7 @@ transactions[[col]]
 transactions[c(1,3,6)]
 
 # Subset rows exlcuding 1, 3, and 6
+transactions[-c(1,3,6)]
 transactions[!c(1,3,6)]
 
 # Subset the first 3 rows
@@ -83,12 +84,9 @@ transactions[-1:-3]
 tail(transactions, -3)
 
 # Subset the last 2 rows
-indices <- seq(nrow(transactions) - 1, nrow(transactions), by=1)
-transactions[indices]
 tail(transactions, 2)
 
 # Subset rows excluding the last 2 rows
-transactions[!indices]
 tail(transactions, -2)
 
 # Subset rows where Quantity > 1
@@ -109,13 +107,13 @@ transactions[foo]
 
 # Subset rows where an external vector, bar, is positive
 bar <- c(1, -3, 2, 2, 0, -4, -4, 0, 0, 2)
-transactions[sign(bar) == 1]
+transactions[bar > 0]
 
 # Subset rows where foo is TRUE or bar is negative
-transactions[foo | sign(bar) == -1]
+transactions[foo | bar < 0]
 
 # Subset the rows where foo is not TRUE and bar is not negative
-transactions[!foo & sign(bar) > -1]
+transactions[!foo & bar >= 0]
 
 #======================================================================================================
 # Column subsetting
@@ -130,15 +128,11 @@ transactions[, .(TransactionID, TransactionDate)]  # short-hand version of line 
 # Subset rows where TransactionID > 5 and subset columns by TransactionID and TransactionDate
 transactions[TransactionID > 5, list(TransactionID, TransactionDate)]
 
-# Subset columns defined by a vector of columm names
+# Subset columns by a vector of columm names c("TransactionID", "UserID", "Quantity")
 print_cols <- c("TransactionID", "UserID", "Quantity")
 transactions[, print_cols, with=FALSE]
 
-# Subset columns defined by a vector of column names
-print_cols <- c("TransactionID", "UserID", "Quantity")
-transactions[, print_cols, with=FALSE]
-
-# Subset columns excluding a vector of column names
+# Subset columns excluding a vector of column names c("TransactionID", "UserID", "Quantity")
 transactions[, !print_cols, with=FALSE]
 
 #======================================================================================================
@@ -301,9 +295,8 @@ users[transactions, on="UserID", Transactions := .N, by=UserID]
 #--------------------------------------------------
 # Setting a key and secondary indexing
 
-# Set the key of Transactions as UserID  ()
-setkey(transactions, "UserID")
-transactions  # notice rows are now sorted by UserID
+# Set the key of Transactions as UserID
+setkey(transactions, "UserID")  # notice rows are now sorted by UserID
 
 # View the key of transactions
 key(transactions)

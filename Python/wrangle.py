@@ -1,210 +1,139 @@
+#======================================================================================================
+# Install numpy and pandas
+
+pip install numpy
+pip install pandas
+
+#======================================================================================================
+# Load numpy and pandas
+
 import numpy as np
 import pandas as pd
 
 #======================================================================================================
-# Build dataset from scratch
+# Build DataFrame from scratch
 
+transactions = pd.DataFrame({
+    'TransactionID': np.arange(10)+1,
+    'TransactionDate': pd.to_datetime(['2010-08-21', '2011-05-26', '2011-06-16', '2012-08-26', '2013-06-06', 
+                              '2013-12-23', '2013-12-30', '2014-04-24', '2015-04-24', '2016-05-08']).date,
+    'UserID': [7, 3, 3, 1, 2, 2, 3, np.NaN, 7, 3],
+    'ProductID': [2, 4, 3, 2, 4, 5, 4, 2, 4, 4],
+    'Quantity': [1, 1, 1, 3, 1, 6, 1, 3, 3, 4]
+})
 
 #======================================================================================================
-# Read and write to CSV
+# Read data from a CSV file
 
-# Write transactions to CSV
-
-# Read transactions from CSV
+# Load transactions
+transactions = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/transactions.csv')
 
 #======================================================================================================
 # Meta info
 
 # Full summary
+transactions.info()
 
 # How many rows?
+transactions.shape[0]
 
 # How many columns?
+transactions.shape[1]
 
-# What are the row names
+# Get the row names
+transactions.index.values
 
-# What are the column names
+# Get the column names
+transactions.columns.values
 
 # Change the name of column "Quantity" to "Quant"
+transactions.rename(columns={'Quantity': 'Quant'})  # use argument inplace=TRUE to keep the changes
 
 # Change the name of columns ProductID and UserID to PID and UID respectively
+transactions.rename(columns={'ProductID': 'PID', 'UserID': 'UID'})  # use argument inplace=TRUE to keep the changes
+
+#======================================================================================================
+# Extracting arrays from a DataFrame
+
+# Get the 2nd column
+transactions[[1]].values[:, 0]
+
+# Get the ProductID vector
+transactions.ProductID.values
+
+# Get the ProductID vector using a variable
+col = "ProductID"
+transactions[[col]].values[:, 0]
 
 #======================================================================================================
 # Row subsetting
 
-# Display rows 1, 3, and 6
+# Subset rows 1, 3, and 6
+transactions.iloc[[0,2,5]]
 
-# Display rows exlcuding 1, 3, and 6
+# Subset rows exlcuding 1, 3, and 6
+transactions.drop([0,2,5], axis=0)
 
-# Display the first 3 rows
+# Subset the first 3 rows
+transactions[:3]
+transactions.head(3)
 
-# Display rows excluding the first 3 rows
+# Subset rows excluding the first 3 rows
+transactions[3:]
+transactions.tail(-3)
 
-# Display the last 2 rows
+# Subset the last 2 rows
+transactions.tail(2)
 
-# Display rows excluding the last 2 rows
+# Subset rows excluding the last 2 rows
+transactions.tail(-2)
 
-# Display rows where Quantity > 1
+# Subset rows where Quantity > 1
+transactions[transactions.Quantity > 1]
 
-# Display rows where UserID = 2
+# Subset rows where UserID = 2
+transactions[transactions.UserID == 2]
 
-# Display rows where Quantity > 1 and UserID = 2
+# Subset rows where Quantity > 1 and UserID = 2
+transactions[(transactions.Quantity > 1) & (transactions.UserID == 2)]
 
-# Display rows where Quantity + UserID is > 3
+# Subset rows where Quantity + UserID is > 3
+transactions[transactions.Quantity + transactions.UserID > 3]
 
-# Display rows where an external vector, foo, is TRUE
+# Subset rows where an external array, foo, is True
+foo = np.array([True, False, True, False, True, False, True, False, True, False])
+transactions[foo]
 
-# Display rows where an external vector, bar, is positive
+# Subset rows where an external array, bar, is positive
+bar = np.array([1, -3, 2, 2, 0, -4, -4, 0, 0, 2])
+transactions[bar > 0]
 
-# Display rows where foo is TRUE or bar is negative
+# Subset rows where foo is TRUE or bar is negative
+transactions[foo | (bar < 0)]
 
-# Display the rows where foo is not TRUE and bar is not negative
-
+# Subset the rows where foo is not TRUE and bar is not negative
+transactions[~foo & (bar >= 0)]
 
 #======================================================================================================
 # Column subsetting
 
-# Get columns 1 and 3
+# Subset by columns 1 and 3
+transactions.iloc[:, [0, 2]]
 
 # Subset by columns TransactionID and TransactionDate
+transactions[['TransactionID', 'TransactionDate']]
 
 # Subset rows where TransactionID > 5 and subset columns by TransactionID and TransactionDate
+transactions.loc[transactions.TransactionID > 5, ['TransactionID', 'TransactionDate']]
 
-# Print columns defined by a vector of colum-names
+# Subset columns by a list of columm names ["TransactionID", "UserID", "Quantity"]
+print_cols = ["TransactionID", "UserID", "Quantity"]
+transactions[print_cols]
 
-# Get columns defined by a vector of colum-names
-
-# Get columns excluding a vector of colum-names
-
-
-#======================================================================================================
-# Extract a vector
-
-# Get the 2nd column
-
-# Get the ProductID vector
-
-# Get the ProductID vector using a variable
+# Subset columns excluding a list of column names
+transactions.drop(print_cols, axis=1)
 
 #======================================================================================================
-# Inserting & Updating Values
-
-# Convert the TransactionDate column to type Date
-
-# Insert a new column, Foo = UserID + ProductID
-
-# Subset rows where TransactionID is even and set Foo = NA
-
-# Add 100 to each TransactionID
-
-# Insert a column indicating each row number
-
-# Insert columns indicating the rank of each Quantity, minimum Quantity and maximum Quantity
-
-# Remove column Foo
-
-# Remove multiple columns RowIdx, QuantityRk, and RowIdx
-
-#======================================================================================================
-# Ordering the rows
-
-# Order by TransactionID descending
-
-# Order by UserID descending, TransactionDate descending
-
-#======================================================================================================
-# Group By & Aggregation
-
-# Count the number of transactions per user
-
-# Count the number of transactions & average Quantity per user
-
-# Count the transactions per year
-
-# Count the transactions per (user, year) pair
-
-# Count the number of unique users which made a transaction per year (this is called chaining)
-
-# For each user in transactions, get the date of the transaction which had the most quantity
-
-# Insert a column in transactions indicating the number of transactions per user
-
-# Insert columns in transactions indicating the first transaction date and last transaction date per user
+# Inserting and updating values
 
 
-#======================================================================================================
-# Joins
-
-#--------------------------------------------------
-# Basic Joins
-
-# Read datasets from CSV (to clear existing )
-
-# Set the first UserID to NA
-
-# Convert date columns to date type
-
-# Join users to transactions, keeping all rows from transactions and only matching rows from users (left join)
-
-# Which transactions aren't tied to a user in users
-
-# Join users to transactions, keeping only rows from transactions and users that match via UserID (inner join)
-
-# Join users to transactions, displaying all matching rows AND all non-matching rows (full outer join)
-
-# Determine which transactions each user made on the same day he/she registered
-
-# Build a dataset with every possible (UserID, ProductID) pair (cross join)
-
-# Determine how much quantity of each product was purchased by each user
-
-# For each user, get each possible pair of pair transactions (TransactionID1, TransactionID2)
-
-# Join each user to his/her first occuring transaction in the transactions table
-
-#--------------------------------------------------
-# Rolling Joins
-
-# Determine the ID of the last session which occured prior to (and including) the date of each transaction per user
-
-# Determine the ID of the first session which occured after (and including) the date of each transaction per user
-
-#--------------------------------------------------
-# Non-equi joins
-
-
-#--------------------------------------------------
-# Join + Update
-
-# Insert the price of each product in the transactions dataset (join + update)
-
-#--------------------------------------------------
-# setkey and secondary indexing
-
-
-
-#======================================================================================================
-# Reshaping
-
-# Convert data from wide to tall
-
-# Convert data from tall to wide
-
-
-#======================================================================================================
-# Miscellaneous
-
-# Pick out the first row per group
-
-# Get rows which contain at least 1 NA value
-# Get rows which contain at least 1 NA value within a subset of columns
-
-# Get rows which contain all NA values
-# Get rows which contain all NA values within a subset of columns
-
-# Get the max value per row
-# Get the max value per row within a subset of columns
-
-# For each (user, transaction), determine which transaction he/she made on the prior day
-
-# Determnine how many transactions each user made. Insert stat as field in transactions

@@ -110,6 +110,7 @@ transactions[c(1,3,6)]
 
 ##### Subset rows exlcuding 1, 3, and 6 ([pandas cross reference](#))
 ```r
+transactions[-c(1,3,6)]
 transactions[!c(1,3,6)]
 ```
 
@@ -127,14 +128,11 @@ tail(transactions, -3)
 
 ##### Subset the last 2 rows ([pandas cross reference](#))
 ```r
-indices <- seq(nrow(transactions) - 1, nrow(transactions), by=1)
-transactions[indices]
 tail(transactions, 2)
 ```
 
 ##### Subset rows excluding the last 2 rows ([pandas cross reference](#))
 ```r
-transactions[!indices]
 tail(transactions, -2)
 ```
 
@@ -200,19 +198,13 @@ transactions[, .(TransactionID, TransactionDate)]  # short-hand version of line 
 transactions[TransactionID > 5, list(TransactionID, TransactionDate)]
 ```
 
-##### Subset columns defined by a vector of columm names ([pandas cross reference](#))
+##### Subset columns by a vector of columm names c("TransactionID", "UserID", "Quantity") ([pandas cross reference](#))
 ```r
 print_cols <- c("TransactionID", "UserID", "Quantity")
 transactions[, print_cols, with=FALSE]
 ```
 
-##### Subset columns defined by a vector of column names ([pandas cross reference](#))
-```r
-print_cols <- c("TransactionID", "UserID", "Quantity")
-transactions[, print_cols, with=FALSE]
-```
-
-##### Subset columns excluding a vector of column names ([pandas cross reference](#))
+##### Subset columns excluding a vector of column names c("TransactionID", "UserID", "Quantity") ([pandas cross reference](#))
 ```r
 transactions[, !print_cols, with=FALSE]
 ```
@@ -393,8 +385,7 @@ users[transactions, on="UserID", Transactions := .N, by=UserID]
 
 ##### Set the key of Transactions as UserID  () ([pandas cross reference](#))
 ```r
-setkey(transactions, "UserID")
-transactions  # notice rows are now sorted by UserID
+setkey(transactions, "UserID")  # notice rows are now sorted by UserID
 ```
 
 ##### View the key of transactions ([pandas cross reference](#))
