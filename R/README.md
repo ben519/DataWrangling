@@ -1,4 +1,4 @@
-# Data Wrangling With data.table</h1>
+# Data Wrangling With data.table
 
 ## Intro
 Note that the examples here use [data.table](https://github.com/Rdatatable/data.table) version 1.9.8. Some of the methods are NOT compatible with prior versions of data.table (e.g. non-equi joins and secondary indexing).
