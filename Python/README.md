@@ -226,15 +226,16 @@ transactions[['TransactionID', 'TransactionDate']]
 transactions.loc[transactions.TransactionID > 5, ['TransactionID', 'TransactionDate']]
 ```
 
-##### Subset columns by a list of columm names ["TransactionID", "UserID", "Quantity"] ([data.table cross reference](https://github.com/ben519/DataWrangling/blob/master/R/README.md#subset-columns-by-a-vector-of-columm-names-ctransactionid-userid-quantity-pandas-cross-reference))
+##### Subset columns by a variable list of columm names ([data.table cross reference](https://github.com/ben519/DataWrangling/blob/master/R/README.md#subset-columns-by-a-vector-of-columm-names-ctransactionid-userid-quantity-pandas-cross-reference))
 ```python
-print_cols = ["TransactionID", "UserID", "Quantity"]
-transactions[print_cols]
+cols = ["TransactionID", "UserID", "Quantity"]
+transactions[cols]
 ```
 
 ##### Subset columns excluding a list of column names ([data.table cross reference](https://github.com/ben519/DataWrangling/blob/master/R/README.md#subset-columns-excluding-a-vector-of-column-names-ctransactionid-userid-quantity-pandas-cross-reference))
 ```python
-transactions.drop(print_cols, axis=1)
+cols = ["TransactionID", "UserID", "Quantity"]
+transactions.drop(cols, axis=1)
 ```
 
 ---

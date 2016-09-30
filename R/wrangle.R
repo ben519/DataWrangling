@@ -151,12 +151,13 @@ transactions[, .(TransactionID, TransactionDate)]  # short-hand version of line 
 # Subset rows where TransactionID > 5 and subset columns by TransactionID and TransactionDate
 transactions[TransactionID > 5, list(TransactionID, TransactionDate)]
 
-# Subset columns by a vector of columm names c("TransactionID", "UserID", "Quantity")
-print_cols <- c("TransactionID", "UserID", "Quantity")
-transactions[, print_cols, with=FALSE]
+# Subset columns by a variable vector of columm names
+cols <- c("TransactionID", "UserID", "Quantity")
+transactions[, cols, with=FALSE]
 
-# Subset columns excluding a vector of column names c("TransactionID", "UserID", "Quantity")
-transactions[, !print_cols, with=FALSE]
+# Subset columns excluding a variable vector of column names
+cols <- c("TransactionID", "UserID", "Quantity")
+transactions[, !cols, with=FALSE]
 
 #======================================================================================================
 # Inserting and updating values

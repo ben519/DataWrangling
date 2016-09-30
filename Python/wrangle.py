@@ -146,12 +146,13 @@ transactions[['TransactionID', 'TransactionDate']]
 # Subset rows where TransactionID > 5 and subset columns by TransactionID and TransactionDate
 transactions.loc[transactions.TransactionID > 5, ['TransactionID', 'TransactionDate']]
 
-# Subset columns by a list of columm names ["TransactionID", "UserID", "Quantity"]
-print_cols = ["TransactionID", "UserID", "Quantity"]
-transactions[print_cols]
+# Subset columns by a variable list of columm names
+cols = ["TransactionID", "UserID", "Quantity"]
+transactions[cols]
 
-# Subset columns excluding a list of column names
-transactions.drop(print_cols, axis=1)
+# Subset columns excluding a variable list of column names
+cols = ["TransactionID", "UserID", "Quantity"]
+transactions.drop(cols, axis=1)
 
 #======================================================================================================
 # Inserting and updating values

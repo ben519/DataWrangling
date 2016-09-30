@@ -107,9 +107,11 @@
 
 # Subset rows where TransactionID > 5 and subset columns by TransactionID and TransactionDate
 
-# Subset columns by a list of columm names ["TransactionID", "UserID", "Quantity"]
+# Subset columns by a variable list of columm names
+cols = ["TransactionID", "UserID", "Quantity"]
 
-# Subset columns excluding a list of column names
+# Subset columns excluding a variable list of column names
+cols = ["TransactionID", "UserID", "Quantity"]
 
 #======================================================================================================
 # Inserting and updating values

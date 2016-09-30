@@ -104,9 +104,11 @@
 
 # Subset rows where TransactionID > 5 and subset columns by TransactionID and TransactionDate
 
-# Subset columns by a vector of columm names c("TransactionID", "UserID", "Quantity")
+# Subset columns by a variable vector of columm names
+cols <- c("TransactionID", "UserID", "Quantity")
 
-# Subset columns excluding a vector of column names c("TransactionID", "UserID", "Quantity")
+# Subset columns excluding a variable vector of column names
+cols <- c("TransactionID", "UserID", "Quantity")
 
 #======================================================================================================
 # Inserting and updating values
