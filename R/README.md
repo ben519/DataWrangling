@@ -231,13 +231,13 @@ transactions[, .(TransactionID, TransactionDate)]  # short-hand version of line 
 transactions[TransactionID > 5, list(TransactionID, TransactionDate)]
 ```
 
-##### Subset columns by a variable vector of columm names ([pandas cross reference](https://github.com/ben519/DataWrangling/tree/master/Python#subset-columns-by-a-list-of-columm-names-transactionid-userid-quantity))
+##### Subset columns by a variable vector of columm names ([pandas cross reference](https://github.com/ben519/DataWrangling/tree/master/Python#subset-columns-by-a-variable-list-of-columm-names-datatable-cross-reference))
 ```r
 cols <- c("TransactionID", "UserID", "Quantity")
 transactions[, cols, with=FALSE]
 ```
 
-##### Subset columns excluding a variable vector of column names ([pandas cross reference](https://github.com/ben519/DataWrangling/tree/master/Python#subset-columns-excluding-a-list-of-column-names-datatable-cross-reference))
+##### Subset columns excluding a variable vector of column names ([pandas cross reference](https://github.com/ben519/DataWrangling/tree/master/Python#subset-columns-excluding-a-variable-list-of-column-names-datatable-cross-reference))
 ```r
 cols <- c("TransactionID", "UserID", "Quantity")
 transactions[, !cols, with=FALSE]
