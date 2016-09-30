@@ -401,7 +401,7 @@ users[transactions, on="UserID", Transactions := .N, by=UserID]
 
 #### Setting a key and secondary indexing ([pandas cross reference](#))
 
-##### Set the key of Transactions as UserID  () ([pandas cross reference](#))
+##### Set the key of Transactions as UserID ([pandas cross reference](#))
 ```r
 setkey(transactions, "UserID")  # notice rows are now sorted by UserID
 ```
