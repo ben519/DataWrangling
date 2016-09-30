@@ -243,7 +243,7 @@ transactions[, TransactionDate := as.Date(TransactionDate)]
 # Join users to transactions, keeping all rows from transactions and only matching rows from users (left join)
 users[transactions, on="UserID"]
 
-# Which transactions aren't tied to a user in users
+# Which transactions aren't tied to a user in users? (anti join)
 transactions[!users, on="UserID"]
 
 # Join users to transactions, keeping only rows from transactions and users that match via UserID (inner join)
@@ -349,8 +349,8 @@ transactions <- transactions <- fread("https://raw.githubusercontent.com/ben519/
 users[, `:=`(Registered = as.Date(Registered), Cancelled = as.Date(Cancelled))]
 transactions[, TransactionDate := as.Date(TransactionDate)]
 
-# Add column TransactionWeekday as a factor with levels Saturday through Friday
-transactions[, TransactionWeekday := factor(weekdays(TransactionDate), levels=c("Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"))]
+# Add column TransactionWeekday as a factor with levels Sunday through Saturday
+transactions[, TransactionWeekday := factor(weekdays(TransactionDate), levels=c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))]
 
 #--------------------------------------------------
 # Convert data from tall format to wide format

@@ -182,3 +182,143 @@ transactions.drop('Foo', axis=1, inplace=True)
 
 # Remove multiple columns RowIdx, QuantityRk, and RowIdx
 transactions.drop(['QuantityRk', 'QuantityMin', 'QuantityMax'], axis=1, inplace=True)
+
+#======================================================================================================
+# Grouping the rows of a DataFrame
+
+#--------------------------------------------------
+# Group By + Aggregate
+
+# Group the transations per user, measuring the number of transactions per user
+
+# Group the transactions per user, measuring the transactions and average quantity per user
+
+# Group the transactions per year of the transaction date, measuring the number of transactions per year
+
+# Group the transactions per (user, transaction-year) pair, measuring the number of transactions per group
+
+# Group the transactions per user, measuring the max quantity each user made for a single transaction and the date of that transaction
+
+# Group the transactions per (user, transaction-year), and then group by transaction-year to get the number of users who made a transaction each year
+
+#--------------------------------------------------
+# Group By + Update
+
+# Insert a column in transactions indicating the number of transactions per user
+
+# Insert columns in transactions indicating the first transaction date and last transaction date per user
+
+# For each transaction, get the date of the previous transaction made by the same user
+
+#======================================================================================================
+# Joining DataFrames
+
+# Load datasets from CSV
+users = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/users.csv')
+sessions = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/sessions.csv')
+products = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/products.csv')
+transactions = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/transactions.csv')
+
+# Convert date columns to Date type
+users['Registered'] = pd.to_datetime(users.Registered)
+users['Cancelled'] = pd.to_datetime(users.Cancelled)
+transactions['TransactionDate'] = pd.to_datetime(transactions.TransactionDate)
+
+#--------------------------------------------------
+# Basic Joins
+
+# Join users to transactions, keeping all rows from transactions and only matching rows from users (left join)
+transactions.merge(users, how='left', on='UserID')
+
+# Which transactions aren't tied to a user in users? (anti join)
+
+# Join users to transactions, keeping only rows from transactions and users that match via UserID (inner join)
+transactions.merge(users, how='inner', on='UserID')
+
+# Join users to transactions, displaying all matching rows AND all non-matching rows (full outer join)
+transactions.merge(users, how='outer', on='UserID')
+
+# Determine which sessions occured on the same day each user registered
+
+# Build a dataset with every possible (UserID, ProductID) pair (cross join)
+
+# Determine how much quantity of each product was purchased by each user
+
+# For each user, get each possible pair of pair transactions (TransactionID1, TransactionID2)
+
+# Join each user to his/her first occuring transaction in the transactions table
+
+#--------------------------------------------------
+# Rolling Joins
+
+# Determine the ID of the last session which occured prior to (and including) the date of each transaction per user
+
+# Determine the ID of the first session which occured after (and including) the date of each transaction per user
+
+#--------------------------------------------------
+# Non-equi joins
+
+# Determine the first transaction that occured for each user prior to (and including) his/her Cancelled date
+
+# Get all transactions where TransactionDate is after the user's Cancellation Date
+
+#--------------------------------------------------
+# Join + Update
+
+# Insert the price of each product in the transactions dataset (join + update)
+
+# Insert the number of transactions each user made into the users dataset
+
+#--------------------------------------------------
+# Setting a key and secondary indexing
+
+# Set the key of Transactions as UserID
+
+# View the key of transactions
+
+# Set the key of users as UserID and join to transactions, matching rows only (inner join)
+
+# Set ProductID as the key of transactions and products without re-ordering the rows, then join matching rows only
+
+# Set each ID column as a secondary join index
+
+# View indices
+
+# Inner join between users, transactions, and products
+
+#======================================================================================================
+# Reshaping a data.table
+
+# Read datasets from CSV
+users = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/users.csv')
+transactions = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/transactions.csv')
+
+# Convert date columns to Date type
+users['Registered'] = pd.to_datetime(users.Registered)
+users['Cancelled'] = pd.to_datetime(users.Cancelled)
+transactions['TransactionDate'] = pd.to_datetime(transactions.TransactionDate)
+
+# Add column TransactionWeekday as Categorical type with categories Sunday through Saturday
+transactions['TransactionWeekday'] = pd.Categorical(transactions.TransactionDate.dt.weekday_name, categories=['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'])
+
+#--------------------------------------------------
+# Convert data from tall format to wide format
+
+# One-hot encode Weekday (i.e. convert data from tall to wide, where each possible weekday is a column)
+
+#--------------------------------------------------
+# Convert data from wide format to tall format
+
+# Build a data.table with columns {UserID, ActionType, Date} where ActionType is either "Registered" or "Cancelled" and Date is the corresponding date value
+
+#======================================================================================================
+# To Do
+
+# Get rows which contain at least 1 NA value
+# Get rows which contain at least 1 NA value within a subset of columns
+
+# Get rows which contain all NA values
+# Get rows which contain all NA values within a subset of columns
+
+# Get the max value per row
+# Get the max value per row within a subset of columns

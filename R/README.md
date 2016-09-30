@@ -312,7 +312,7 @@ transactions[, TransactionDate := as.Date(TransactionDate)]
 users[transactions, on="UserID"]
 ```
 
-##### Which transactions aren't tied to a user in users ([pandas cross reference](#))
+##### Which transactions aren't tied to a user in users? (anti join) ([pandas cross reference](#))
 ```r
 transactions[!users, on="UserID"]
 ```
@@ -459,8 +459,8 @@ transactions <- transactions <- fread("https://raw.githubusercontent.com/ben519/
 users[, `:=`(Registered = as.Date(Registered), Cancelled = as.Date(Cancelled))]
 transactions[, TransactionDate := as.Date(TransactionDate)]
 
-# Add column TransactionWeekday as a factor with levels Saturday through Friday
-transactions[, TransactionWeekday := factor(weekdays(TransactionDate), levels=c("Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"))]
+# Add column TransactionWeekday as a factor with levels Sunday through Saturday
+transactions[, TransactionWeekday := factor(weekdays(TransactionDate), levels=c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))]
 ```
 
 #### Convert data from tall format to wide format ([pandas cross reference](#))

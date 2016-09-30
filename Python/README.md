@@ -290,29 +290,38 @@ transactions.drop(['QuantityRk', 'QuantityMin', 'QuantityMax'], axis=1, inplace=
 
 #### Setup ([data.table cross reference](#))
 ```python
-# TODO
+# Load datasets from CSV
+users = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/users.csv')
+sessions = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/sessions.csv')
+products = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/products.csv')
+transactions = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/transactions.csv')
+
+# Convert date columns to Date type
+users['Registered'] = pd.to_datetime(users.Registered)
+users['Cancelled'] = pd.to_datetime(users.Cancelled)
+transactions['TransactionDate'] = pd.to_datetime(transactions.TransactionDate)
 ```
 
 #### Basic Joins
 
 ##### Join users to transactions, keeping all rows from transactions and only matching rows from users (left join) ([data.table cross reference](#))
 ```python
-# TODO
+transactions.merge(users, how='left', on='UserID')
 ```
 
-##### Which transactions aren't tied to a user in users ([data.table cross reference](#))
+##### Which transactions aren't tied to a user in users? (anti join) ([data.table cross reference](#))
 ```python
 # TODO
 ```
 
 ##### Join users to transactions, keeping only rows from transactions and users that match via UserID (inner join) ([data.table cross reference](#))
 ```python
-# TODO
+transactions.merge(users, how='inner', on='UserID')
 ```
 
 ##### Join users to transactions, displaying all matching rows AND all non-matching rows (full outer join) ([data.table cross reference](#))
 ```python
-# TODO
+transactions.merge(users, how='outer', on='UserID')
 ```
 
 ##### Determine which sessions occured on the same day each user registered ([data.table cross reference](#))
@@ -419,7 +428,17 @@ transactions.drop(['QuantityRk', 'QuantityMin', 'QuantityMax'], axis=1, inplace=
 
 #### Setup ([data.table cross reference](#))
 ```python
-# TODO
+# Read datasets from CSV
+users = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/users.csv')
+transactions = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/transactions.csv')
+
+# Convert date columns to Date type
+users['Registered'] = pd.to_datetime(users.Registered)
+users['Cancelled'] = pd.to_datetime(users.Cancelled)
+transactions['TransactionDate'] = pd.to_datetime(transactions.TransactionDate)
+
+# Add column TransactionWeekday as Categorical type with categories Sunday through Saturday
+transactions['TransactionWeekday'] = pd.Categorical(transactions.TransactionDate.dt.weekday_name, categories=['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'])
 ```
 
 #### Convert data from tall format to wide format ([data.table cross reference](#))
