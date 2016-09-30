@@ -293,12 +293,17 @@ transactions.drop(['QuantityRk', 'QuantityMin', 'QuantityMax'], axis=1, inplace=
 
 ##### Group the transations per user, measuring the number of transactions per user ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-the-transations-per-user-measuring-the-number-of-transactions-per-user-pandas))
 ```python
-# TODO
+transactions.groupby('UserID').apply(lambda x: pd.Series(dict(
+    Transactions=x.shape[0],
+))).reset_index()
 ```
 
 ##### Group the transactions per user, measuring the transactions and average quantity per user ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-the-transactions-per-user-measuring-the-transactions-and-average-quantity-per-user-pandas))
 ```python
-# TODO
+transactions.groupby('UserID').apply(lambda x: pd.Series(dict(
+    Transactions=x.shape[0],
+    QuantityAvg=x.Quantity.mean()
+))).reset_index()
 ```
 
 ##### Group the transactions per year of the transaction date, measuring the number of transactions per year ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-the-transactions-per-year-of-the-transaction-date-measuring-the-number-of-transactions-per-year-pandas))
