@@ -287,53 +287,53 @@ transactions.drop(['QuantityRk', 'QuantityMin', 'QuantityMax'], axis=1, inplace=
 
 ---
 
-### Grouping the rows of a DataFrame ([data.table](#))
+### Grouping the rows of a DataFrame ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#grouping-the-rows-of-a-datatable-pandas))
 
-#### Group By + Aggregate ([data.table](#))
+#### Group By + Aggregate ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-by--aggregate-pandas))
 
-##### Group the transations per user, measuring the number of transactions per user ([data.table](#))
+##### Group the transations per user, measuring the number of transactions per user ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-the-transations-per-user-measuring-the-number-of-transactions-per-user-pandas))
 ```python
 # TODO
 ```
 
-##### Group the transactions per user, measuring the transactions and average quantity per user ([data.table](#))
+##### Group the transactions per user, measuring the transactions and average quantity per user ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-the-transactions-per-user-measuring-the-transactions-and-average-quantity-per-user-pandas))
 ```python
 # TODO
 ```
 
-##### Group the transactions per year of the transaction date, measuring the number of transactions per year ([data.table](#))
+##### Group the transactions per year of the transaction date, measuring the number of transactions per year ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-the-transactions-per-year-of-the-transaction-date-measuring-the-number-of-transactions-per-year-pandas))
 ```python
 # TODO
 ```
 
-##### Group the transactions per (user, transaction-year) pair, measuring the number of transactions per group ([data.table](#))
+##### Group the transactions per (user, transaction-year) pair, measuring the number of transactions per group ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-the-transactions-per-user-transaction-year-pair-measuring-the-number-of-transactions-per-group-pandas))
 ```python
 # TODO
 ```
 
-##### Group the transactions per user, measuring the max quantity each user made for a single transaction and the date of that transaction ([data.table](#))
+##### Group the transactions per user, measuring the max quantity each user made for a single transaction and the date of that transaction ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-the-transactions-per-user-measuring-the-max-quantity-each-user-made-for-a-single-transaction-and-the-date-of-that-transaction-pandas))
 ```python
 # TODO
 ```
 
-##### Group the transactions per (user, transaction-year), and then group by transaction-year to get the number of users who made a transaction each year ([data.table](#))
+##### Group the transactions per (user, transaction-year), and then group by transaction-year to get the number of users who made a transaction each year ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-the-transactions-per-user-transaction-year-and-then-group-by-transaction-year-to-get-the-number-of-users-who-made-a-transaction-each-year-pandas))
 ```python
 # TODO
 ```
 
-#### Group By + Update ([data.table](#))
+#### Group By + Update ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-by--update-pandas))
 
-##### Insert a column in transactions indicating the number of transactions per user ([data.table](#))
+##### Insert a column in transactions indicating the number of transactions per user ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#insert-a-column-in-transactions-indicating-the-number-of-transactions-per-user-pandas))
 ```python
 # TODO
 ```
 
-##### Insert columns in transactions indicating the first transaction date and last transaction date per user ([data.table](#))
+##### Insert columns in transactions indicating the first transaction date and last transaction date per user ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#insert-columns-in-transactions-indicating-the-first-transaction-date-and-last-transaction-date-per-user-pandas))
 ```python
 # TODO
 ```
 
-##### For each transaction, get the date of the previous transaction made by the same user ([data.table](#))
+##### For each transaction, get the date of the previous transaction made by the same user ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#for-each-transaction-get-the-date-of-the-previous-transaction-made-by-the-same-user-pandas))
 ```python
 # TODO
 ```
