@@ -290,6 +290,60 @@ transactions[, c("RowIdx", "QuantityRk", "QuantityMin", "QuantityMax") := NULL]
 
 ---
 
+### Grouping the rows of a data.table ([pandas](#))
+
+#### Group By + Aggregate ([pandas](#))
+
+##### Group the transations per user, measuring the number of transactions per user ([pandas](#))
+```r
+transactions[, list(Transactions = .N), by=UserID]
+```
+
+##### Group the transactions per user, measuring the transactions and average quantity per user ([pandas](#))
+```r
+transactions[, list(Transactions = .N, QuantityAvg = mean(Quantity)), by=UserID]
+```
+
+##### Group the transactions per year of the transaction date, measuring the number of transactions per year ([pandas](#))
+```r
+transactions[, list(Transactions = .N), by=year(TransactionDate)]
+```
+
+##### Group the transactions per (user, transaction-year) pair, measuring the number of transactions per group ([pandas](#))
+```r
+transactions[, list(Transactions = .N), by=list(UserID, TransactionYear=year(TransactionDate))]
+```
+
+##### Group the transactions per user, measuring the max quantity each user made for a single transaction and the date of that transaction ([pandas](#))
+```r
+transactions[, list(MaxTransactionQuantityDate=TransactionDate[which.max(Quantity)], MaxQuantity=max(Quantity)), by=UserID]
+```
+
+##### Group the transactions per (user, transaction-year), and then group by transaction-year to get the number of users who made a transaction each year ([pandas](#))
+```r
+transactions[, list(Transactions = .N), by=list(UserID, TransactionYear=year(TransactionDate))][, list(Users=.N), by=TransactionYear]
+```
+
+#### Group By + Update ([pandas](#))
+
+##### Insert a column in transactions indicating the number of transactions per user ([pandas](#))
+```r
+transactions[, UserTransactions := .N, by=UserID]
+```
+
+##### Insert columns in transactions indicating the first transaction date and last transaction date per user ([pandas](#))
+```r
+transactions[, `:=`(FirstTransactionDate=min(TransactionDate), LastTransactionDate=max(TransactionDate)), by=UserID]
+```
+
+##### For each transaction, get the date of the previous transaction made by the same user ([pandas](#))
+```r
+setorder(transactions, "UserID", "TransactionDate")
+transactions[, PrevTransactionDate := c(as.Date(NA), head(TransactionDate, -1)), by=UserID]
+```
+
+---
+
 ### Joining data.tables ([pandas](https://github.com/ben519/DataWrangling/tree/master/Python#joining-dataframes-datatable))
 
 #### Setup ([pandas](https://github.com/ben519/DataWrangling/tree/master/Python#setup-datatable))

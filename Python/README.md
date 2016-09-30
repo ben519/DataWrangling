@@ -287,6 +287,59 @@ transactions.drop(['QuantityRk', 'QuantityMin', 'QuantityMax'], axis=1, inplace=
 
 ---
 
+### Grouping the rows of a DataFrame ([data.table](#))
+
+#### Group By + Aggregate ([data.table](#))
+
+##### Group the transations per user, measuring the number of transactions per user ([data.table](#))
+```python
+# TODO
+```
+
+##### Group the transactions per user, measuring the transactions and average quantity per user ([data.table](#))
+```python
+# TODO
+```
+
+##### Group the transactions per year of the transaction date, measuring the number of transactions per year ([data.table](#))
+```python
+# TODO
+```
+
+##### Group the transactions per (user, transaction-year) pair, measuring the number of transactions per group ([data.table](#))
+```python
+# TODO
+```
+
+##### Group the transactions per user, measuring the max quantity each user made for a single transaction and the date of that transaction ([data.table](#))
+```python
+# TODO
+```
+
+##### Group the transactions per (user, transaction-year), and then group by transaction-year to get the number of users who made a transaction each year ([data.table](#))
+```python
+# TODO
+```
+
+#### Group By + Update ([data.table](#))
+
+##### Insert a column in transactions indicating the number of transactions per user ([data.table](#))
+```python
+# TODO
+```
+
+##### Insert columns in transactions indicating the first transaction date and last transaction date per user ([data.table](#))
+```python
+# TODO
+```
+
+##### For each transaction, get the date of the previous transaction made by the same user ([data.table](#))
+```python
+# TODO
+```
+
+---
+
 ### Joining DataFrames ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#joining-datatables-pandas))
 
 #### Setup ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#setup-pandas))
