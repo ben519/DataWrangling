@@ -42,6 +42,20 @@
 # Change the name of columns ProductID and UserID to PID and UID respectively
 
 #======================================================================================================
+# Ordering the rows of a data.table
+
+# Order the rows of transactions by TransactionID descending
+
+# Order the rows of transactions by Quantity ascending, TransactionDate descending
+
+#======================================================================================================
+# Ordering the columns of a data.table
+
+# Set the column order of transactions as ProductID, Quantity, TransactionDate, TransactionID, UserID
+
+# Make UserID the first column of transactions
+
+#======================================================================================================
 # Extracting vectors from a data.table
 
 # Get the 2nd column
@@ -114,13 +128,6 @@
 # Remove multiple columns RowIdx, QuantityRk, and RowIdx
 
 #======================================================================================================
-# Ordering the rows of a data.table
-
-# Order by TransactionID descending
-
-# Order by Quantity ascending, TransactionDate descending
-
-#======================================================================================================
 # Grouping the rows of a data.table
 
 #--------------------------------------------------
@@ -157,9 +164,6 @@
 # https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/transactions.csv
 
 # Convert all date columns to Date type
-users[, `:=`(Registered = as.Date(Registered), Cancelled = as.Date(Cancelled))]
-sessions[, SessionDate := as.Date(SessionDate)]
-transactions[, TransactionDate := as.Date(TransactionDate)]
 
 #--------------------------------------------------
 # Basic Joins

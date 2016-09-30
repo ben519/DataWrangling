@@ -53,6 +53,27 @@ setnames(transactions, c("ProductID", "UserID"), c("PID", "UID"))
 setnames(transactions, c("PID", "UID"), c("ProductID", "UserID"))  # change them back
 
 #======================================================================================================
+# Ordering the rows of a data.table
+
+# Order the rows of transactions by TransactionID descending
+transactions[order(-TransactionID)]
+
+# Order the rows of transactions by Quantity ascending, TransactionDate descending
+setorderv(transactions, c("Quantity", "TransactionDate"), order=c(1, -1))
+setorder(transactions, TransactionID)  # change it back
+
+#======================================================================================================
+# Ordering the columns of a data.table
+
+# Set the column order of transactions as ProductID, Quantity, TransactionDate, TransactionID, UserID
+setcolorder(transactions, c("ProductID", "Quantity", "TransactionDate", "TransactionID", "UserID"))
+setcolorder(transactions, c("TransactionID", "TransactionDate", "UserID", "ProductID", "Quantity"))  # reset the column order
+
+# Make UserID the first column of transactions
+setcolorder(transactions, unique(c("UserID", colnames(transactions))))
+setcolorder(transactions, c("TransactionID", "TransactionDate", "UserID", "ProductID", "Quantity"))  # reset the column order
+
+#======================================================================================================
 # Extracting vectors from a data.table
 
 # Get the 2nd column
@@ -148,8 +169,8 @@ transactions[, Foo := UserID + ProductID]
 transactions[TransactionID %% 2 == 0, Foo := NA]
 
 # Add 100 to each TransactionID
-transactions[, TransactionID := 100 + TransactionID]
-transactions[, TransactionID := TransactionID - 100]  # revert to original IDs
+transactions[, TransactionID := TransactionID + 100L]
+transactions[, TransactionID := TransactionID - 100L]  # revert to original IDs
 
 # Insert a column indicating each row number
 transactions[, RowIdx := .I]
@@ -162,16 +183,6 @@ transactions[, Foo := NULL]
 
 # Remove multiple columns RowIdx, QuantityRk, and RowIdx
 transactions[, c("RowIdx", "QuantityRk", "QuantityMin", "QuantityMax") := NULL]
-
-#======================================================================================================
-# Ordering the rows of a data.table
-
-# Order by TransactionID descending
-transactions[order(-TransactionID)]
-
-# Order by Quantity ascending, TransactionDate descending
-setorderv(transactions, c("Quantity", "TransactionDate"), order=c(1, -1))
-setorder(transactions, TransactionID)  # change it back
 
 #======================================================================================================
 # Grouping the rows of a data.table

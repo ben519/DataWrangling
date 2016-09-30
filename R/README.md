@@ -81,6 +81,37 @@ setnames(transactions, c("PID", "UID"), c("ProductID", "UserID"))  # change them
 
 ---
 
+### Ordering the rows of a data.table ([pandas cross reference](#))
+
+##### Order the rows of transactions by TransactionID descending ([pandas cross reference](#))
+```r
+transactions[order(-TransactionID)]
+```
+
+##### Order the rows of transactions by Quantity ascending, TransactionDate descending ([pandas cross reference](#))
+```r
+setorderv(transactions, c("Quantity", "TransactionDate"), order=c(1, -1))
+setorder(transactions, TransactionID)  # change it back
+```
+
+---
+
+### Ordering the columns of a data.table ([pandas cross reference](#))
+
+#####  Set the column order of transactions as ProductID, Quantity, TransactionDate, TransactionID, UserID ([pandas cross reference](#))
+```r
+setcolorder(transactions, c("ProductID", "Quantity", "TransactionDate", "TransactionID", "UserID"))
+setcolorder(transactions, c("TransactionID", "TransactionDate", "UserID", "ProductID", "Quantity"))  # reset the column order
+```
+
+#####  Make UserID the first column of transactions ([pandas cross reference](#))
+```r
+setcolorder(transactions, unique(c("UserID", colnames(transactions))))
+setcolorder(transactions, c("TransactionID", "TransactionDate", "UserID", "ProductID", "Quantity"))  # reset the column order
+```
+
+---
+
 ### Extracting vectors from a data.table ([pandas cross reference](#))
 
 ##### Get the 2nd column ([pandas cross reference](#))
@@ -230,8 +261,8 @@ transactions[TransactionID %% 2 == 0, Foo := NA]
 
 ##### Add 100 to each TransactionID ([pandas cross reference](#))
 ```r
-transactions[, TransactionID := 100 + TransactionID]
-transactions[, TransactionID := TransactionID - 100]  # revert to original IDs
+transactions[, TransactionID := TransactionID + 100L]
+transactions[, TransactionID := TransactionID - 100L]  # revert to original IDs
 ```
 
 ##### Insert a column indicating each row number ([pandas cross reference](#))
@@ -252,21 +283,6 @@ transactions[, Foo := NULL]
 ##### Remove multiple columns RowIdx, QuantityRk, and RowIdx ([pandas cross reference](#))
 ```r
 transactions[, c("RowIdx", "QuantityRk", "QuantityMin", "QuantityMax") := NULL]
-```
-
----
-
-### Ordering the rows of a data.table ([pandas cross reference](#))
-
-##### Order by TransactionID descending ([pandas cross reference](#))
-```r
-transactions[order(-TransactionID)]
-```
-
-##### Order by Quantity ascending, TransactionDate descending ([pandas cross reference](#))
-```r
-setorderv(transactions, c("Quantity", "TransactionDate"), order=c(1, -1))
-setorder(transactions, TransactionID)  # change it back
 ```
 
 ---
