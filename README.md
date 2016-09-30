@@ -1,7 +1,7 @@
 #### Anxious to start?
-[*Wrangle data with pandas (Python)!*](https://github.com/ben519/DataWrangling/blob/master/Python/README.md)
+[*Wrangle data with pandas! (Python)*](https://github.com/ben519/DataWrangling/blob/master/Python/README.md)
 
-[*Wrangle data with data.table (R)!*](https://github.com/ben519/DataWrangling/blob/master/R/README.md)
+[*Wrangle data with data.table! (R)*](https://github.com/ben519/DataWrangling/blob/master/R/README.md)
 
 # DataWrangling
 
