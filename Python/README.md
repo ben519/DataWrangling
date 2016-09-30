@@ -253,7 +253,7 @@ transactions['Foo'] = transactions.UserID + transactions.ProductID
 
 ##### Subset rows where TransactionID is even and set Foo = NA ([data.table cross reference](https://github.com/ben519/DataWrangling/blob/master/R/README.md#subset-rows-where-transactionid-is-even-and-set-foo--na-pandas-cross-reference))
 ```python
-transactions.loc[transactions.TransactionID % 2 == 0, 'Foo'] = np.nan ([data.table cross reference](#))
+transactions.loc[transactions.TransactionID % 2 == 0, 'Foo'] = np.nan
 ```
 
 ##### Add 100 to each TransactionID ([data.table cross reference](https://github.com/ben519/DataWrangling/blob/master/R/README.md#add-100-to-each-transactionid-pandas-cross-reference))
