@@ -78,10 +78,10 @@ transactions[pd.unique(['UserID'] + transactions.columns.values.tolist()).tolist
 # Get the 2nd column
 transactions[[1]].values[:, 0]
 
-# Get the ProductID vector
+# Get the ProductID array
 transactions.ProductID.values
 
-# Get the ProductID vector using a variable
+# Get the ProductID array using a variable
 col = "ProductID"
 transactions[[col]].values[:, 0]
 

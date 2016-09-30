@@ -13,7 +13,7 @@ pip install pandas
 
 ---
 
-### Import the pandas package ([data.table cross reference](https://github.com/ben519/DataWrangling/blob/master/R/README.md#load-the-datatable-package-pandas-cross-reference))
+### Import numpy and pandas ([data.table cross reference](https://github.com/ben519/DataWrangling/blob/master/R/README.md#load-the-datatable-package-pandas-cross-reference))
 ```python
 import numpy as np
 import pandas as pd
@@ -118,12 +118,12 @@ transactions[pd.unique(['UserID'] + transactions.columns.values.tolist()).tolist
 transactions[[1]].values[:, 0]
 ```
 
-##### Get the ProductID vector ([data.table cross reference](#))
+##### Get the ProductID array ([data.table cross reference](#))
 ```python
 transactions.ProductID.values
 ```
 
-##### Get the ProductID vector using a variable ([data.table cross reference](#))
+##### Get the ProductID array using a variable ([data.table cross reference](#))
 ```python
 col = "ProductID"
 transactions[[col]].values[:, 0]

@@ -1,12 +1,12 @@
 # Wrangle Data With data.table
 
 #======================================================================================================
-# Install data.table package
+# Install data.table
 
 install.packages("data.table")
 
 #======================================================================================================
-# Load data.table package
+# Load data.table
 
 library(data.table)
 

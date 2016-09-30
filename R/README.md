@@ -12,7 +12,7 @@ install.packages("data.table")
 
 ---
 
-### Load the data.table package ([pandas cross reference](https://github.com/ben519/DataWrangling/tree/master/Python#import-the-pandas-package-datatable-cross-reference))
+### Load data.table ([pandas cross reference](https://github.com/ben519/DataWrangling/tree/master/Python#import-the-pandas-package-datatable-cross-reference))
 ```r
 library(data.table)
 ```
