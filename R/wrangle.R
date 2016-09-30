@@ -11,7 +11,7 @@ install.packages("data.table")
 library(data.table)
 
 #======================================================================================================
-# Build data.table from scratch
+# Build a data.table from scratch
 
 transactions <- data.table(
   TransactionID = seq(1, 10),

@@ -1,16 +1,31 @@
-import numpy as np
-import pandas as pd
+# Wrangle Data With pandas
 
 #======================================================================================================
-# Build dataset from scratch
-
+# Install numpy and pandas
 
 #======================================================================================================
-# Read and write to CSV
+# Import numpy and pandas
 
-# Write transactions to CSV
+#======================================================================================================
+# Build a DataFrame from scratch
 
-# Read transactions from CSV
+#   ProductID  Quantity TransactionDate  TransactionID  UserID
+# 0          2         1      2010-08-21              1     7.0
+# 1          4         1      2011-05-26              2     3.0
+# 2          3         1      2011-06-16              3     3.0
+# 3          2         3      2012-08-26              4     1.0
+# 4          4         1      2013-06-06              5     2.0
+# 5          5         6      2013-12-23              6     2.0
+# 6          4         1      2013-12-30              7     3.0
+# 7          2         3      2014-04-24              8     NaN
+# 8          4         3      2015-04-24              9     7.0
+# 9          4         4      2016-05-08             10     3.0
+
+#======================================================================================================
+# Read data from a CSV file
+
+# Load transactions
+# https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/transactions.csv
 
 #======================================================================================================
 # Meta info
@@ -21,73 +36,83 @@ import pandas as pd
 
 # How many columns?
 
-# What are the row names
+# Get the row names
 
-# What are the column names
+# Get the column names
 
 # Change the name of column "Quantity" to "Quant"
 
 # Change the name of columns ProductID and UserID to PID and UID respectively
 
 #======================================================================================================
+# Ordering the rows of a DataFrame
+
+# Order the rows of transactions by TransactionID descending
+
+# Order the rows of transactions by Quantity ascending, TransactionDate descending
+
+#======================================================================================================
+# Ordering the columns of a DataFrame
+
+# Set the column order of transactions as ProductID, Quantity, TransactionDate, TransactionID, UserID
+
+# Make UserID the first column of transactions
+
+#======================================================================================================
+# Extracting arrays from a DataFrame
+
+# Get the 2nd column
+
+# Get the ProductID array
+
+# Get the ProductID array using a variable
+
+#======================================================================================================
 # Row subsetting
 
-# Display rows 1, 3, and 6
+# Subset rows 1, 3, and 6
 
-# Display rows exlcuding 1, 3, and 6
+# Subset rows exlcuding 1, 3, and 6
 
-# Display the first 3 rows
+# Subset the first 3 rows
 
-# Display rows excluding the first 3 rows
+# Subset rows excluding the first 3 rows
 
-# Display the last 2 rows
+# Subset the last 2 rows
 
-# Display rows excluding the last 2 rows
+# Subset rows excluding the last 2 rows
 
-# Display rows where Quantity > 1
+# Subset rows where Quantity > 1
 
-# Display rows where UserID = 2
+# Subset rows where UserID = 2
 
-# Display rows where Quantity > 1 and UserID = 2
+# Subset rows where Quantity > 1 and UserID = 2
 
-# Display rows where Quantity + UserID is > 3
+# Subset rows where Quantity + UserID is > 3
 
-# Display rows where an external vector, foo, is TRUE
+# Subset rows where an external array, foo, is True
 
-# Display rows where an external vector, bar, is positive
+# Subset rows where an external array, bar, is positive
 
-# Display rows where foo is TRUE or bar is negative
+# Subset rows where foo is TRUE or bar is negative
 
-# Display the rows where foo is not TRUE and bar is not negative
-
+# Subset the rows where foo is not TRUE and bar is not negative
 
 #======================================================================================================
 # Column subsetting
 
-# Get columns 1 and 3
+# Subset by columns 1 and 3
 
 # Subset by columns TransactionID and TransactionDate
 
 # Subset rows where TransactionID > 5 and subset columns by TransactionID and TransactionDate
 
-# Print columns defined by a vector of colum-names
+# Subset columns by a list of columm names ["TransactionID", "UserID", "Quantity"]
 
-# Get columns defined by a vector of colum-names
-
-# Get columns excluding a vector of colum-names
-
+# Subset columns excluding a list of column names
 
 #======================================================================================================
-# Extract a vector
-
-# Get the 2nd column
-
-# Get the ProductID vector
-
-# Get the ProductID vector using a variable
-
-#======================================================================================================
-# Inserting & Updating Values
+# Inserting and updating values
 
 # Convert the TransactionDate column to type Date
 
@@ -106,53 +131,61 @@ import pandas as pd
 # Remove multiple columns RowIdx, QuantityRk, and RowIdx
 
 #======================================================================================================
-# Ordering the rows
+# Grouping the rows of a DataFrame
 
-# Order by TransactionID descending
+#--------------------------------------------------
+# Group By + Aggregate
 
-# Order by UserID descending, TransactionDate descending
+# Group the transations per user, measuring the number of transactions per user
 
-#======================================================================================================
-# Group By & Aggregation
+# Group the transactions per user, measuring the transactions and average quantity per user
 
-# Count the number of transactions per user
+# Group the transactions per year of the transaction date, measuring the number of transactions per year
 
-# Count the number of transactions & average Quantity per user
+# Group the transactions per (user, transaction-year) pair, measuring the number of transactions per group
 
-# Count the transactions per year
+# Group the transactions per user, measuring the max quantity each user made for a single transaction and the date of that transaction
 
-# Count the transactions per (user, year) pair
+# Group the transactions per (user, transaction-year), and then group by transaction-year to get the number of users who made a transaction each year
 
-# Count the number of unique users which made a transaction per year (this is called chaining)
-
-# For each user in transactions, get the date of the transaction which had the most quantity
+#--------------------------------------------------
+# Group By + Update
 
 # Insert a column in transactions indicating the number of transactions per user
 
 # Insert columns in transactions indicating the first transaction date and last transaction date per user
 
+# For each transaction, get the date of the previous transaction made by the same user
 
 #======================================================================================================
-# Joins
+# Joining DataFrames
+
+# Load datasets from CSV
+users = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/users.csv')
+sessions = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/sessions.csv')
+products = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/products.csv')
+transactions = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/transactions.csv')
+
+# Convert date columns to Date type
+users['Registered'] = pd.to_datetime(users.Registered)
+users['Cancelled'] = pd.to_datetime(users.Cancelled)
+transactions['TransactionDate'] = pd.to_datetime(transactions.TransactionDate)
 
 #--------------------------------------------------
 # Basic Joins
 
-# Read datasets from CSV (to clear existing )
-
-# Set the first UserID to NA
-
-# Convert date columns to date type
-
 # Join users to transactions, keeping all rows from transactions and only matching rows from users (left join)
+transactions.merge(users, how='left', on='UserID')
 
-# Which transactions aren't tied to a user in users
+# Which transactions aren't tied to a user in users? (anti join)
 
 # Join users to transactions, keeping only rows from transactions and users that match via UserID (inner join)
+transactions.merge(users, how='inner', on='UserID')
 
 # Join users to transactions, displaying all matching rows AND all non-matching rows (full outer join)
+transactions.merge(users, how='outer', on='UserID')
 
-# Determine which transactions each user made on the same day he/she registered
+# Determine which sessions occured on the same day each user registered
 
 # Build a dataset with every possible (UserID, ProductID) pair (cross join)
 
@@ -172,39 +205,51 @@ import pandas as pd
 #--------------------------------------------------
 # Non-equi joins
 
+# Determine the first transaction that occured for each user prior to (and including) his/her Cancelled date
+
+# Get all transactions where TransactionDate is after the user's Cancellation Date
 
 #--------------------------------------------------
 # Join + Update
 
 # Insert the price of each product in the transactions dataset (join + update)
 
+# Insert the number of transactions each user made into the users dataset
+
 #--------------------------------------------------
-# setkey and secondary indexing
+# Setting a key and secondary indexing
 
+# Set the key of Transactions as UserID
 
+# View the key of transactions
+
+# Set the key of users as UserID and join to transactions, matching rows only (inner join)
+
+# Set ProductID as the key of transactions and products without re-ordering the rows, then join matching rows only
+
+# Set each ID column as a secondary join index
+
+# View indices
+
+# Inner join between users, transactions, and products
 
 #======================================================================================================
-# Reshaping
+# Reshaping a data.table
 
-# Convert data from wide to tall
+# Read datasets from CSV
+# https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/users.csv
+# https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/transactions.csv
 
-# Convert data from tall to wide
+# Convert date columns to Date type
 
+# Add column TransactionWeekday as Categorical type with categories Sunday through Saturday
 
-#======================================================================================================
-# Miscellaneous
+#--------------------------------------------------
+# Convert data from tall format to wide format
 
-# Pick out the first row per group
+# One-hot encode Weekday (i.e. convert data from tall to wide, where each possible weekday is a column)
 
-# Get rows which contain at least 1 NA value
-# Get rows which contain at least 1 NA value within a subset of columns
+#--------------------------------------------------
+# Convert data from wide format to tall format
 
-# Get rows which contain all NA values
-# Get rows which contain all NA values within a subset of columns
-
-# Get the max value per row
-# Get the max value per row within a subset of columns
-
-# For each (user, transaction), determine which transaction he/she made on the prior day
-
-# Determnine how many transactions each user made. Insert stat as field in transactions
+# Build a data.table with columns {UserID, ActionType, Date} where ActionType is either "Registered" or "Cancelled" and Date is the corresponding date value
