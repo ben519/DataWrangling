@@ -5,7 +5,7 @@ Note that the examples here use [data.table](https://github.com/Rdatatable/data.
 
 ---
 
-### Install the data.table package ([pandas cross reference](https://github.com/ben519/DataWrangling/tree/master/Python#install-the-pandas-package-datatable-cross-reference))
+### Install data.table ([pandas cross reference](https://github.com/ben519/DataWrangling/tree/master/Python#install-the-pandas-package-datatable-cross-reference))
 ```r
 install.packages("data.table")
 ```
@@ -34,6 +34,8 @@ Quantity = c(0L, 3L, 0L, 0L, 3L, 4L, 0L, 6L, 0L, 3L)
 ---
 
 ### Read data from a CSV file ([pandas cross reference](#))
+
+##### Load transactions ([pandas cross reference](#))
 ```r
 transactions <- fread("https://raw.githubusercontent.com/ben519/DataWrangling/master/Data/transactions.csv")
 ```

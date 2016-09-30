@@ -1,3 +1,5 @@
+# Wrangle Data With pandas
+
 #======================================================================================================
 # Install numpy and pandas
 
@@ -5,7 +7,7 @@ pip install numpy
 pip install pandas
 
 #======================================================================================================
-# Load numpy and pandas
+# Import numpy and pandas
 
 import numpy as np
 import pandas as pd
