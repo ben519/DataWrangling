@@ -191,15 +191,13 @@ transactions.drop(['QuantityRk', 'QuantityMin', 'QuantityMax'], axis=1, inplace=
 # Group By + Aggregate
 
 # Group the transations per user, measuring the number of transactions per user
-transactions.groupby('UserID').apply(lambda x: pd.Series(dict(
-    Transactions=x.shape[0],
-))).reset_index()
+transactions.groupby('UserID').TransactionDate.count().reset_index()
 
 # Group the transactions per user, measuring the transactions and average quantity per user
-transactions.groupby('UserID').apply(lambda x: pd.Series(dict(
-    Transactions=x.shape[0],
-    QuantityAvg=x.Quantity.mean()
-))).reset_index()
+(transactions.groupby('UserID')
+             .agg({'Quantity': 'mean', 'TransactionDate': 'count'})
+             .rename(columns = {'Quantity': 'QuantityAvg','TransactionDate': 'Transactions'})
+             .reset_index())
 
 # Group the transactions per year of the transaction date, measuring the number of transactions per year
 
