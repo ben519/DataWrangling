@@ -202,22 +202,24 @@ transactions.groupby('UserID').apply(lambda x: pd.Series(dict(
 ))).reset_index()
 
 # Group the transactions per year of the transaction date, measuring the number of transactions per year
-
+t_year = transactions.TransactionDate.dt.year
+transactions.groupby(t_year)['TransactionID'].nunique()
 # Group the transactions per (user, transaction-year) pair, measuring the number of transactions per group
-
+transactions.groupby(['UserID', t_year]).TransactionID.nunique()
 # Group the transactions per user, measuring the max quantity each user made for a single transaction and the date of that transaction
-
+transactions.sort_values(['Quantity', 'TransactionDate']).groupby('UserID').last()
 # Group the transactions per (user, transaction-year), and then group by transaction-year to get the number of users who made a transaction each year
 
 #--------------------------------------------------
 # Group By + Update
 
 # Insert a column in transactions indicating the number of transactions per user
-
+transactions['NUserTransactions'] = transactions.groupby('UserID').UserID.transform(lambda x: len(x))
 # Insert columns in transactions indicating the first transaction date and last transaction date per user
-
+transactions['first_date'] = transactions.groupby('UserID').TransactionDate.transform(lambda x: x.min())
+transactions['last_date'] = transactions.groupby('UserID').TransactionDate.transform(lambda x: x.max())
 # For each transaction, get the date of the previous transaction made by the same user
-
+transactions['prev_trans'] = transactions.groupby('UserID').TransactionDate.transform(lambda x: x.shift(1))
 #======================================================================================================
 # Joining DataFrames
 
@@ -231,7 +233,7 @@ transactions = pd.read_csv('https://raw.githubusercontent.com/ben519/DataWrangli
 users['Registered'] = pd.to_datetime(users.Registered)
 users['Cancelled'] = pd.to_datetime(users.Cancelled)
 transactions['TransactionDate'] = pd.to_datetime(transactions.TransactionDate)
-
+sessions['SessionDate'] = pd.to_datetime(sessions.SessionDate)
 #--------------------------------------------------
 # Basic Joins
 
@@ -239,6 +241,8 @@ transactions['TransactionDate'] = pd.to_datetime(transactions.TransactionDate)
 transactions.merge(users, how='left', on='UserID')
 
 # Which transactions aren't tied to a user in users? (anti join)
+unique_users = users.UserID.unique()
+transactions[~transactions.UserID.isin(unique_users)]
 
 # Join users to transactions, keeping only rows from transactions and users that match via UserID (inner join)
 transactions.merge(users, how='inner', on='UserID')
@@ -247,11 +251,13 @@ transactions.merge(users, how='inner', on='UserID')
 transactions.merge(users, how='outer', on='UserID')
 
 # Determine which sessions occured on the same day each user registered
-
+users.merge(sessions, left_on=['UserID', 'Registered'], right_on=['UserID', 'SessionDate'])
 # Build a dataset with every possible (UserID, ProductID) pair (cross join)
 
 # Determine how much quantity of each product was purchased by each user
-
+summary = users.merge(transactions, on='UserID', how='left')
+summary.ProductID = summary.ProductID.astype('category')
+summary.pivot_table(index='ProductID', columns='UserID', values='Quantity', aggfunc='sum', fill_value=0)
 # For each user, get each possible pair of pair transactions (TransactionID1, TransactionID2)
 
 # Join each user to his/her first occuring transaction in the transactions table
