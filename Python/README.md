@@ -370,7 +370,7 @@ transactions.merge(users, how='left', on='UserID')
 
 ##### Which transactions have a UserID not in users? (anti join) ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#which-transactions-have-a-userid-not-in-users-anti-join-pandas))
 ```python
-# TODO
+transactions[~transactions['UserID'].isin(users['UserID'])]
 ```
 
 ##### Join users to transactions, keeping only rows from transactions and users that match via UserID (inner join) ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#join-users-to-transactions-keeping-only-rows-from-transactions-and-users-that-match-via-userid-inner-join-pandas))
