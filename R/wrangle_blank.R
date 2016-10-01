@@ -172,7 +172,7 @@ cols <- c("TransactionID", "UserID", "Quantity")
 
 # Join users to transactions, keeping all rows from transactions and only matching rows from users (left join)
 
-# Which transactions aren't tied to a user in users
+# Which transactions have a UserID not in users? (anti join)
 
 # Join users to transactions, keeping only rows from transactions and users that match via UserID (inner join)
 

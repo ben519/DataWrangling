@@ -367,7 +367,7 @@ transactions[, TransactionDate := as.Date(TransactionDate)]
 users[transactions, on="UserID"]
 ```
 
-##### Which transactions aren't tied to a user in users? (anti join) ([pandas](https://github.com/ben519/DataWrangling/tree/master/Python#which-transactions-arent-tied-to-a-user-in-users-anti-join-datatable))
+##### Which transactions have a UserID not in users? (anti join) ([pandas](https://github.com/ben519/DataWrangling/tree/master/Python#which-transactions-have-a-userid-not-in-users-anti-join-datatable))
 ```r
 transactions[!users, on="UserID"]
 ```

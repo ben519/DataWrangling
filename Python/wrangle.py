@@ -238,7 +238,8 @@ transactions['TransactionDate'] = pd.to_datetime(transactions.TransactionDate)
 # Join users to transactions, keeping all rows from transactions and only matching rows from users (left join)
 transactions.merge(users, how='left', on='UserID')
 
-# Which transactions aren't tied to a user in users? (anti join)
+# Which transactions have a UserID not in users? (anti join)
+transactions[~transactions['UserID'].isin(users['UserID'])]
 
 # Join users to transactions, keeping only rows from transactions and users that match via UserID (inner join)
 transactions.merge(users, how='inner', on='UserID')

@@ -368,7 +368,7 @@ transactions['TransactionDate'] = pd.to_datetime(transactions.TransactionDate)
 transactions.merge(users, how='left', on='UserID')
 ```
 
-##### Which transactions aren't tied to a user in users? (anti join) ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#which-transactions-arent-tied-to-a-user-in-users-anti-join-pandas))
+##### Which transactions have a UserID not in users? (anti join) ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#which-transactions-have-a-userid-not-in-users-anti-join-pandas))
 ```python
 # TODO
 ```

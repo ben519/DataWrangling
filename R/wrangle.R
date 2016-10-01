@@ -244,7 +244,7 @@ transactions[, TransactionDate := as.Date(TransactionDate)]
 # Join users to transactions, keeping all rows from transactions and only matching rows from users (left join)
 users[transactions, on="UserID"]
 
-# Which transactions aren't tied to a user in users? (anti join)
+# Which transactions have a UserID not in users? (anti join)
 transactions[!users, on="UserID"]
 
 # Join users to transactions, keeping only rows from transactions and users that match via UserID (inner join)
