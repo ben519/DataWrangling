@@ -22,12 +22,12 @@ library(data.table)
 ### Build a data.table from scratch ([pandas](https://github.com/ben519/DataWrangling/tree/master/Python#build-a-dataframe-from-scratch-datatable))
 ```r
 transactions <- data.table(
-TransactionID = seq(1, 10),
-TransactionDate = as.Date(c("2011-06-16", "2012-08-26", "2013-12-30", "2011-05-26", "2014-04-24", 
-"2016-05-08", "2010-08-21", "2013-12-23", "2013-06-06", "2015-04-24")),
-ProductID = c(3L, 2L, 4L, 4L, 2L, 4L, 2L, 5L, 4L, 4L), 
-UserID = c(3L, 1L, 3L, 3L, 1L, 5L, 1L, 2L, 2L, 3L), 
-Quantity = c(0L, 3L, 0L, 0L, 3L, 4L, 0L, 6L, 0L, 3L)
+  TransactionID = seq(1, 10),
+  TransactionDate = as.Date(c("2010-08-21", "2011-05-26", "2011-06-16", "2012-08-26", "2013-06-06", 
+                              "2013-12-23", "2013-12-30", "2014-04-24", "2015-04-24", "2016-05-08")),
+  UserID = c(7L, 3L, 3L, 1L, 2L, 2L, 3L, NA, 7L, 3L),
+  ProductID = c(2L, 4L, 3L, 2L, 4L, 5L, 4L, 2L, 4L, 4L),
+  Quantity = c(1L, 1L, 1L, 3L, 1L, 6L, 1L, 3L, 3L, 4L)
 )
 ```
 
@@ -198,17 +198,17 @@ transactions[foo]
 ##### Subset rows where an external vector, bar, is positive ([pandas](https://github.com/ben519/DataWrangling/tree/master/Python#subset-rows-where-an-external-array-bar-is-positive-datatable))
 ```r
 bar <- c(1, -3, 2, 2, 0, -4, -4, 0, 0, 2)
-transactions[sign(bar) == 1]
+transactions[bar > 0]
 ```
 
 ##### Subset rows where foo is TRUE or bar is negative ([pandas](https://github.com/ben519/DataWrangling/tree/master/Python#subset-rows-where-foo-is-true-or-bar-is-negative-datatable))
 ```r
-transactions[foo | sign(bar) == -1]
+transactions[foo | bar < 0]
 ```
 
 ##### Subset the rows where foo is not TRUE and bar is not negative ([pandas](https://github.com/ben519/DataWrangling/tree/master/Python#subset-the-rows-where-foo-is-not-true-and-bar-is-not-negative-datatable))
 ```r
-transactions[!foo & sign(bar) > -1]
+transactions[!foo & bar >= 0]
 ```
 
 ---
