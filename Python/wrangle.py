@@ -191,7 +191,11 @@ transactions.drop(['QuantityRk', 'QuantityMin', 'QuantityMax'], axis=1, inplace=
 # Group By + Aggregate
 
 # Group the transations per user, measuring the number of transactions per user
-transactions.groupby('UserID').TransactionDate.count().reset_index()
+(transactions.groupby('UserID')
+             .TransactionDate
+             .count()
+             .reset_index()
+             .rename(columns = {'TransactionDate': 'Transactions'}))
 
 # Group the transactions per user, measuring the transactions and average quantity per user
 (transactions.groupby('UserID')
