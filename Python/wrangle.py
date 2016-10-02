@@ -192,7 +192,7 @@ transactions.drop(['QuantityRk', 'QuantityMin', 'QuantityMax'], axis=1, inplace=
 
 # Group the transations per user, measuring the number of transactions per user
 transactions.groupby('UserID').apply(lambda x: pd.Series(dict(
-    Transactions=x.shape[0],
+    Transactions=x.shape[0]
 ))).reset_index()
 
 # Group the transactions per user, measuring the transactions and average quantity per user
@@ -248,14 +248,26 @@ transactions.merge(users, how='inner', on='UserID')
 transactions.merge(users, how='outer', on='UserID')
 
 # Determine which sessions occured on the same day each user registered
+pd.merge(left=users, right=sessions, how='inner', left_on=['UserID', 'Registered'], right_on=['UserID', 'SessionDate'])
 
 # Build a dataset with every possible (UserID, ProductID) pair (cross join)
+df1 = pd.DataFrame({'key': np.repeat(1, users.shape[0]), 'UserID': users.UserID})
+df2 = pd.DataFrame({'key': np.repeat(1, products.shape[0]), 'ProductID': products.ProductID})
+pd.merge(df1, df2,on='key')[['UserID', 'ProductID']]
 
 # Determine how much quantity of each product was purchased by each user
+df1 = pd.DataFrame({'key': np.repeat(1, users.shape[0]), 'UserID': users.UserID})
+df2 = pd.DataFrame({'key': np.repeat(1, products.shape[0]), 'ProductID': products.ProductID})
+user_products = pd.merge(df1, df2,on='key')[['UserID', 'ProductID']]
+pd.merge(user_products, transactions, how='left', on=['UserID', 'ProductID']).groupby(['UserID', 'ProductID']).apply(lambda x: pd.Series(dict(
+    Quantity=x.Quantity.sum()
+))).reset_index().fillna(0)
 
 # For each user, get each possible pair of pair transactions (TransactionID1, TransactionID2)
+pd.merge(transactions, transactions, on='UserID')
 
 # Join each user to his/her first occuring transaction in the transactions table
+pd.merge(users, transactions.groupby('UserID').first().reset_index(), how='left', on='UserID')
 
 #--------------------------------------------------
 # Rolling Joins

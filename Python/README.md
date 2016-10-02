@@ -385,27 +385,34 @@ transactions.merge(users, how='outer', on='UserID')
 
 ##### Determine which sessions occured on the same day each user registered ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#determine-which-sessions-occured-on-the-same-day-each-user-registered-pandas))
 ```python
-# TODO
+pd.merge(left=users, right=sessions, how='inner', left_on=['UserID', 'Registered'], right_on=['UserID', 'SessionDate'])
 ```
 
 ##### Build a dataset with every possible (UserID, ProductID) pair (cross join) ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#build-a-dataset-with-every-possible-userid-productid-pair-cross-join-pandas))
 ```python
-# TODO
+df1 = pd.DataFrame({'key': np.repeat(1, users.shape[0]), 'UserID': users.UserID})
+df2 = pd.DataFrame({'key': np.repeat(1, products.shape[0]), 'ProductID': products.ProductID})
+pd.merge(df1, df2,on='key')[['UserID', 'ProductID']]
 ```
 
 ##### Determine how much quantity of each product was purchased by each user ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#determine-how-much-quantity-of-each-product-was-purchased-by-each-user-pandas))
 ```python
-# TODO
+df1 = pd.DataFrame({'key': np.repeat(1, users.shape[0]), 'UserID': users.UserID})
+df2 = pd.DataFrame({'key': np.repeat(1, products.shape[0]), 'ProductID': products.ProductID})
+user_products = pd.merge(df1, df2,on='key')[['UserID', 'ProductID']]
+pd.merge(user_products, transactions, how='left', on=['UserID', 'ProductID']).groupby(['UserID', 'ProductID']).apply(lambda x: pd.Series(dict(
+    Quantity=x.Quantity.sum()
+))).reset_index().fillna(0)
 ```
 
 ##### For each user, get each possible pair of pair transactions (TransactionID1, TransactionID2) ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#for-each-user-get-each-possible-pair-of-pair-transactions-transactionid1-transactionid2-pandas))
 ```python
-# TODO
+pd.merge(transactions, transactions, on='UserID')
 ```
 
 ##### Join each user to his/her first occuring transaction in the transactions table ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#join-each-user-to-hisher-first-occuring-transaction-in-the-transactions-table-pandas))
 ```python
-# TODO
+pd.merge(users, transactions.groupby('UserID').first().reset_index(), how='left', on='UserID')
 ```
 
 #### Rolling Joins ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#rolling-joins-pandas))
