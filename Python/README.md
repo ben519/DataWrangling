@@ -308,22 +308,34 @@ transactions.groupby('UserID').apply(lambda x: pd.Series(dict(
 
 ##### Group the transactions per year of the transaction date, measuring the number of transactions per year ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-the-transactions-per-year-of-the-transaction-date-measuring-the-number-of-transactions-per-year-pandas))
 ```python
-# TODO
+transactions['TransactionDate'] = pd.to_datetime(transactions.TransactionDate)
+transactions['Year'] = transactions['TransactionDate'].apply(lambda x: x.year)
+transactions.groupby('Year').apply(lambda x: pd.Series(dict(
+    Transactions=x.shape[0]
+))).reset_index()
 ```
 
 ##### Group the transactions per (user, transaction-year) pair, measuring the number of transactions per group ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-the-transactions-per-user-transaction-year-pair-measuring-the-number-of-transactions-per-group-pandas))
 ```python
-# TODO
+transactions['TransactionDate'] = pd.to_datetime(transactions.TransactionDate)
+transactions['Year'] = transactions['TransactionDate'].apply(lambda x: x.year)
+grouped = transactions.groupby(['Year', 'UserID'])
+grouped['Year'].agg({'Transactions':np.size}).reset_index()
+
 ```
 
 ##### Group the transactions per user, measuring the max quantity each user made for a single transaction and the date of that transaction ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-the-transactions-per-user-measuring-the-max-quantity-each-user-made-for-a-single-transaction-and-the-date-of-that-transaction-pandas))
 ```python
-# TODO
+grouped = transactions.groupby(['UserID'])
+idx = grouped['Quantity'].transform(max) == transactions['Quantity']
+transactions[idx][['TransactionDate', 'UserID', 'Quantity']]
 ```
 
 ##### Group the transactions per (user, transaction-year), and then group by transaction-year to get the number of users who made a transaction each year ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-the-transactions-per-user-transaction-year-and-then-group-by-transaction-year-to-get-the-number-of-users-who-made-a-transaction-each-year-pandas))
 ```python
-# TODO
+transactions['Year'] = transactions['TransactionDate'].apply(lambda x: x.year)
+grouped = transactions.groupby(['Year','UserID'])
+grouped['Year'].agg({'count':np.size}).reset_index()
 ```
 
 #### Group By + Update ([data.table](https://github.com/ben519/DataWrangling/blob/master/R/README.md#group-by--update-pandas))
