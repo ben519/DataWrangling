@@ -35,3 +35,7 @@ I'd like to encourage contributions for this project - it's well suited for it. 
 
 ## Contact
 If you'd like to contact me regarding bugs, questions, or general consulting, feel free to drop me a line - bgorman519@gmail.com
+
+## Support
+Found this *free* repo helpful? Show your support and [buy some merch](https://shop.gormanalysis.com/)!
+[![GormAnalysis Shop](https://www.gormanalysis.com/ads/gormanalysis-shop.jpg)](https://shop.gormanalysis.com/)
