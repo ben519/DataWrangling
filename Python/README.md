@@ -1,5 +1,8 @@
 # Data Wrangling With pandas
 
+## ATTENTION!
+These examples are significantly out of date. For an update look at Pandas, check out my free course [Python Pandas For Your Grandpa](https://www.gormanalysis.com/blog/python-pandas-for-your-grandpa/) - so easy your grandpa could learn it!
+
 ## Intro
 Note that the examples here use [pandas](https://github.com/pydata/pandas) version 0.18.1
 
