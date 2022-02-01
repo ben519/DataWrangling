@@ -1,3 +1,7 @@
+## Check out [Practice Probs](https://www.practiceprobs.com/problemsets/python-pandas/) for new pandas content and practice problems.
+
+---
+
 #### Anxious to start? [*Data Wrangling with pandas (Python)*](https://github.com/ben519/DataWrangling/blob/master/Python/README.md) | [*Data Wrangling with data.table (R)*](https://github.com/ben519/DataWrangling/blob/master/R/README.md)
 
 ---
